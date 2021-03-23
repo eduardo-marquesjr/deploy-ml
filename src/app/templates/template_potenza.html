@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Recomendação Produtos Potenza</title>
+        <link rel="stylesheet" href="../static/css/reset.css"> 
+        <link rel="stylesheet" href="../static/css/bootstrap.css">
+        <link rel="stylesheet" href="../static/css/style-potenza.css">
+    </head> 
+
+    <body>
+      <header class="cabecalho">
+        <img src="../static/img/potenza1.jpg"> 
+      </header>
+
+      <form action="{{ url_for('recomenda') }}" method = "POST" enctype="multipart/form-data"
+        class="d-flex justify-content-center align-items-center"> 
+          <div class="recomenda d-inline-block">      
+            <label for="conta" class="m-0">Selecione a conta para recomendar:</label>
+            <input list="contas" name="conta" id="conta" class="mr-3" required>
+            <datalist id="contas">  
+              {% for conta in contas %}
+                <option> {{ conta }} </option>
+              {% endfor %}
+            </datalist>
+          </div>
+
+          <div class="recomendar d-inline-block">
+            <button type="submit" class="btn btn-primary btn-salvar pt-0 pb-0">Recomendar</button>
+          </div>
+
+      </form> 
+    </body>
+</html>
+
+
+
