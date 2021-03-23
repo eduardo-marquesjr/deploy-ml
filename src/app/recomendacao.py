@@ -16,7 +16,7 @@ basic_auth = BasicAuth(app)
 def index():
     dados = pd.read_excel('../../references/Dados Final Potenza.xlsx')
     dados = sorted(list(dados['Conta'].unique()))  
-    return render_template('templates/visual_potenza.html', contas = dados)
+    return render_template('visual_potenza.html', contas = dados)
 
 @app.route('/recomenda/' , methods = ['POST']) 
 def recomenda():
