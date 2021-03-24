@@ -14,7 +14,7 @@ basic_auth = BasicAuth(app)
 @app.route('/') 
 @basic_auth.required
 def index():
-    dados = pd.read_excel(open('Dados Final Potenza.xlsx', 'rb')) 
+    dados = pd.read_excel('Dados Final Potenza.xlsx') 
     dados = sorted(list(dados['Conta'].unique()))  
     return render_template('visual_potenza.html', contas = dados)
 
