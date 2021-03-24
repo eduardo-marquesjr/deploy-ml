@@ -11,8 +11,8 @@ app.config['BASIC_AUTH_PASSWORD'] = os.environ.get('BASIC_AUTH_PASSWORD')
 
 basic_auth = BasicAuth(app)
 
-dados_final = pd.read_excel('../../references/Dados Final Potenza.xlsx') 
-dados_nomes = pd.read_excel('../../references/Dados Nomes Potenza.xlsx') 
+dados_final = pd.read_excel('Dados Final Potenza.xlsx') 
+dados_nomes = pd.read_excel('Dados Nomes Potenza.xlsx') 
 print(dados_final['Conta'][0])
 print(dados_nomes['Produto'][0])
 
