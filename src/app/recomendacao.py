@@ -20,8 +20,8 @@ def index():
 
 @app.route('/recomenda/' , methods = ['POST']) 
 def recomenda():
-    dados = pd.read_excel('../../data/processed/Dados Final Potenza.xlsx')
-    dados_nomes = pd.read_excel('../../data/processed/Dados Nomes Potenza.xlsx') 
+    dados = pd.read_excel('../../references/Dados Final Potenza.xlsx')
+    dados_nomes = pd.read_excel('../../references/Dados Nomes Potenza.xlsx') 
     conta = int(request.form['conta']) 
     dados_final = dados[['Conta','Mercado','Produto','Ativo','Segmento','Categoria']][dados['Conta'] == conta]
     localiza = dados[['Conta','Mercado','Produto','Segmento','Ativo','Categoria','Clusters']][dados['Conta'] == conta]
@@ -30,7 +30,7 @@ def recomenda():
     recomendacoes = dados_nomes[dados_nomes['Clusters'].isin(lista_cluster)] 
     # recomendacoes = recomendacoes.drop(localiza['Produto'].index, axis = 0)  
     recomendacoes = recomendacoes[['Produto','Segmento','Categoria']]
-    return render_template('templates/recomendacao.html', dados_filtrado = dados_final, 
+    return render_template('recomendacao.html', dados_filtrado = dados_final, 
                                     colunas = colunas, recomendacoes = recomendacoes)
 
 app.run(debug = True) 
