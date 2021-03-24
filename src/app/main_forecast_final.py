@@ -42,5 +42,6 @@ def forecast():
     df_raw['prediction'] = previs
     return df_raw.to_json(orient = 'records')
 
-app.run(debug = True)
+if __name__ == '__main__':
+    app.run(debug=True)  
 
