@@ -17,9 +17,8 @@ print(dados['Conta'][0])
 @app.route('/') 
 @basic_auth.required
 def index():
-    dados = dados
-    dados = sorted(list(dados['Conta'].unique()))  
-    return render_template('visual_potenza.html', contas = dados)
+    lista_contas = sorted(list(dados['Conta'].unique()))  
+    return render_template('visual_potenza.html', contas = lista_contas)
 
 @app.route('/recomenda/' , methods = ['POST']) 
 def recomenda():
