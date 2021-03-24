@@ -11,7 +11,7 @@ app.config['BASIC_AUTH_PASSWORD'] = os.environ.get('BASIC_AUTH_PASSWORD')
 
 basic_auth = BasicAuth(app)
 
-with open('Dados Final Potenza.xlsx', 'rb') as df:
+with open('../../references/Dados Final Potenza.xlsx', 'rb') as df:
     dados = df.read()
 
 @app.route('/') 
