@@ -13,8 +13,6 @@ basic_auth = BasicAuth(app)
 
 dados_final = pd.read_excel('Dados Final Potenza.xlsx') 
 dados_nomes = pd.read_excel('Dados Nomes Potenza.xlsx') 
-print(dados_final['Conta'][0])
-print(dados_nomes['Produto'][0])
 
 @app.route('/') 
 @basic_auth.required
