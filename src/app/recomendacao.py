@@ -11,13 +11,11 @@ app.config['BASIC_AUTH_PASSWORD'] = os.environ.get('BASIC_AUTH_PASSWORD')
 
 basic_auth = BasicAuth(app)
 
-with open('../../references/Dados Final Potenza.xlsx', 'rb') as df:
-    dados = df.read()
+dados = pd.read_excel('../../references/Dados Final Potenza.xlsx') 
 
 @app.route('/') 
 @basic_auth.required
 def index():
-    dados = pd.read_excel('Dados Final Potenza.xlsx') 
     dados = sorted(list(dados['Conta'].unique()))  
     return render_template('visual_potenza.html', contas = dados)
 
