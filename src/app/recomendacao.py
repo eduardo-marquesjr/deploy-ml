@@ -35,4 +35,4 @@ def recomenda():
     return render_template('recomendacao.html', dados_filtrado = dados_filtrado, 
                                     colunas = colunas, recomendacoes = recomendacoes)
 
-app.run(debug = True) 
+app.run(debug = True, host='0.0.0.0') 
