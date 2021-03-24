@@ -34,4 +34,4 @@ def recomenda():
                                     colunas = colunas, recomendacoes = recomendacoes)
 
 
-app.run(debug=True, port=100)    
+app.run(debug=True, port=100, host='0.0.0.0')     
