@@ -6,8 +6,8 @@ import os
 
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
-app.config['BASIC_AUTH_USERNAME'] = os.environ.get('BASIC_AUTH_USERNAME')
-app.config['BASIC_AUTH_PASSWORD'] = os.environ.get('BASIC_AUTH_PASSWORD')
+app.config['BASIC_AUTH_USERNAME'] = os.environ['BASIC_AUTH_USERNAME']
+app.config['BASIC_AUTH_PASSWORD'] = os.environ['BASIC_AUTH_PASSWORD']
 
 basic_auth = BasicAuth(app)
 
@@ -33,5 +33,5 @@ def recomenda():
     return render_template('recomendacao.html', dados_filtrado = dados_filtrado, 
                                     colunas = colunas, recomendacoes = recomendacoes)
 
-
-app.run(debug=True, port=100, host='0.0.0.0')     
+if __name__ == '__main__':
+    app.run(debug=True, port=100, host='0.0.0.0')     
