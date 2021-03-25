@@ -23,7 +23,7 @@ def recomenda():
     conta = int(request.form['conta']) 
     dados_filtrado = dados_final[['Conta','Mercado','Produto','Ativo','Segmento','Categoria']][dados_final['Conta'] == conta]
     localiza = dados_final[['Conta','Mercado','Produto','Segmento','Ativo','Categoria','Clusters']][dados_final['Conta'] == conta]
-    colunas = dados_final.columns.values 
+    colunas = dados_filtrado.columns.values  
     lista_cluster = localiza['Clusters'].unique() 
     recomendacoes = dados_nomes[dados_nomes['Clusters'].isin(lista_cluster)] 
     # recomendacoes = recomendacoes.drop(localiza['Produto'].index, axis = 0)  
