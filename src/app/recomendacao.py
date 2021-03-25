@@ -33,5 +33,4 @@ def recomenda():
     return render_template('recomendacao.html', dados_filtrado = dados_filtrado, 
                                     colunas = colunas, recomendacoes = recomendacoes)
 
-if __name__ == '__main__':
-    app.run(debug=True, port=100, host='0.0.0.0')     
+app.run(debug=True, port=100, host='0.0.0.0')     
