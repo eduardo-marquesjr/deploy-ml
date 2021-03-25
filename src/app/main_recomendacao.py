@@ -1,11 +1,9 @@
 from flask import Flask, render_template, request, redirect, session, flash, url_for
 from flask_basicauth import BasicAuth
 import pandas as pd
-import pickle
 import os
 
 app = Flask(__name__)
-app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 app.config['BASIC_AUTH_USERNAME'] = os.environ['BASIC_AUTH_USERNAME']
 app.config['BASIC_AUTH_PASSWORD'] = os.environ['BASIC_AUTH_PASSWORD']
 
