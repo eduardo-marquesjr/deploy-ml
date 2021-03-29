@@ -3,11 +3,11 @@ from flask_basicauth import BasicAuth
 import pandas as pd
 import os
 
-SECRET_KEY = 'ccm'
 
 app = Flask(__name__)
 app.config['BASIC_AUTH_USERNAME'] = os.environ['BASIC_AUTH_USERNAME']
 app.config['BASIC_AUTH_PASSWORD'] = os.environ['BASIC_AUTH_PASSWORD']
+app.secret_key = 'ccm'
 
 basic_auth = BasicAuth(app)
 
