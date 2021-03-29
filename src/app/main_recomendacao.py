@@ -13,7 +13,7 @@ basic_auth = BasicAuth(app)
 
 dados_final = pd.read_excel('Dados Final Potenza.xlsx') 
 dados_nomes = pd.read_excel('Dados Nomes Potenza.xlsx') 
-dados_usuarios = pd.read_csv('potenza.csv')
+dados_usuarios = pd.read_csv('potenza.csv', sep = ';')
 
 @app.route('/home') 
 # @basic_auth.required
