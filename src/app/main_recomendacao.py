@@ -5,11 +5,11 @@ import os
 
 
 app = Flask(__name__)
-app.config['BASIC_AUTH_USERNAME'] = os.environ['BASIC_AUTH_USERNAME']
-app.config['BASIC_AUTH_PASSWORD'] = os.environ['BASIC_AUTH_PASSWORD']
+# app.config['BASIC_AUTH_USERNAME'] = os.environ['BASIC_AUTH_USERNAME']
+# app.config['BASIC_AUTH_PASSWORD'] = os.environ['BASIC_AUTH_PASSWORD']
 app.secret_key = 'ccm'
 
-basic_auth = BasicAuth(app)
+# basic_auth = BasicAuth(app)
 
 dados_final = pd.read_excel('Dados Final Potenza.xlsx') 
 dados_nomes = pd.read_excel('Dados Nomes Potenza.xlsx') 
