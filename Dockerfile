@@ -11,6 +11,6 @@ COPY  ./models /usr/models
 
 ENTRYPOINT [ "python3" ]
 
-CMD [ "src/app/main_recomendacao.py" ]
+CMD [ "/usr/src/app/main_recomendacao.py" ]
 
 
