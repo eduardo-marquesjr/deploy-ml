@@ -10,9 +10,9 @@ app.secret_key = 'ccm'
 
 # basic_auth = BasicAuth(app)
 
-dados_final = pd.read_excel('Dados Final Potenza.xlsx') 
-dados_nomes = pd.read_excel('Dados Nomes Potenza.xlsx') 
-dados_usuarios = pd.read_csv('potenza.csv', sep = ';')
+dados_final = pd.read_excel('src/app/Dados Final Potenza.xlsx') 
+dados_nomes = pd.read_excel('src/app/Dados Nomes Potenza.xlsx') 
+dados_usuarios = pd.read_csv('src/app/potenza.csv', sep = ';')
 
 @app.route('/home') 
 # @basic_auth.required

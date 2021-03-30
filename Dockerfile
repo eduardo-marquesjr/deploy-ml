@@ -6,11 +6,11 @@ WORKDIR /usr
 
 RUN pip3 install -r requirements.txt
 
-COPY ./src/* /usr/src/
+COPY ./src /usr/src
 COPY  ./models /usr/models
 
 ENTRYPOINT [ "python3" ]
 
-CMD [ "/usr/src/app/main_recomendacao.py" ]
+CMD [ "src/app/main_recomendacao.py" ]
 
 
