@@ -1,46 +1,41 @@
 from flask import Flask, render_template, request, redirect, session, flash, url_for
-from flask_basicauth import BasicAuth
 import pandas as pd
 import os
+from tratamento import trata_e_roda
 
 app = Flask(__name__)
-# app.config['BASIC_AUTH_USERNAME'] = os.environ['BASIC_AUTH_USERNAME']
-# app.config['BASIC_AUTH_PASSWORD'] = os.environ['BASIC_AUTH_PASSWORD']
 app.secret_key = 'ccm'
 
-# basic_auth = BasicAuth(app)
-
-dados_final = pd.read_excel('src/app/Dados Final Potenza.xlsx') 
-dados_nomes = pd.read_excel('src/app/Dados Nomes Potenza.xlsx') 
-dados_usuarios = pd.read_csv('src/app/potenza.csv', sep = ';')
+dados_nomes, dados_usuarios = trata_e_roda()
 
 @app.route('/home') 
-# @basic_auth.required
 def home():
     if 'usuario_logado' not in session or session['usuario_logado'] == None:
         return redirect(url_for('login', proxima=url_for('home')))  
-    lista_contas = sorted(list(dados_final['Conta'].unique()))  
+    lista_contas = sorted(list(dados_nomes['Conta'].unique()))  
     return render_template('visual_potenza.html', contas = lista_contas)
 
 @app.route('/recomenda/' , methods = ['POST']) 
 def recomenda():
     conta = int(request.form['conta']) 
-    dados_filtrado = dados_final[['Conta','Mercado','Produto','Ativo','Segmento','Categoria']][dados_final['Conta'] == conta]
-    localiza = dados_final[['Conta','Mercado','Produto','Segmento','Ativo','Categoria','Clusters']][dados_final['Conta'] == conta]
+    dados_filtrado = dados_nomes[['Conta','Produto','Categoria-Segmento','Tipo', 'Profissão', 'Estado Civil', 'Estado', 'Perfil do Cliente',
+                                 'Tipo Investidor', 'Faixa Cliente', 'Idade']][dados_nomes['Conta'] == conta]
+    localiza = dados_nomes[dados_nomes['Conta'] == conta]
     colunas = dados_filtrado.columns.values  
-    lista_cluster = localiza['Clusters'].unique() 
-    recomendacoes = dados_nomes[dados_nomes['Clusters'].isin(lista_cluster)] 
-    # recomendacoes = recomendacoes.drop(localiza['Produto'].index, axis = 0)  
-    recomendacoes = recomendacoes[['Produto','Segmento','Categoria']]
-    return render_template('recomendacao.html', dados_filtrado = dados_filtrado, 
-                                    colunas = colunas, recomendacoes = recomendacoes)
+    cluster = localiza.Clusters.unique()[0] 
+    recomendacoes = dados_nomes[dados_nomes.Clusters == cluster] 
+    recomendacoes = recomendacoes['Categoria-Segmento'][recomendacoes.Clusters == cluster].unique()
+    recomendacoes = [recomendacoes[i] for i in range(len(recomendacoes))] 
+    tamanho_recomendacao = len(recomendacoes) 
+    return render_template('recomendacao.html', dados_filtrado = dados_filtrado, colunas = colunas, 
+                                    recomendacoes = recomendacoes, tamanho_recomendacao = tamanho_recomendacao)
 
 @app.route('/login')
 def login():
     proxima = request.args.get('proxima')
     return render_template('login_potenza.html', proxima=proxima)
 
-@app.route('/autenticar', methods=['POST', ])
+@app.route('/autenticar', methods=['POST'])
 def autenticar():
     usuario = request.form['usuario']
     senha = request.form['senha']

@@ -35,19 +35,10 @@
 
 <div class="tabela2">
     <table class="table table-striped table-responsive table-bordered font-size:smaller">
-        <thead class="thead-default">
-            <tr>
-                {% for coluna in recomendacoes.columns.values %}
-                    <th>{{ coluna }}</th>
-                {% endfor %}
-            </tr> 
-        </thead>  
         <tbody> 
-            {% for i in range(recomendacoes.shape[0]) %} 
-            <tr>
-                {% for j in range(recomendacoes.shape[1]) %}  
-                    <td>{{ recomendacoes[i:i+1].values[0][j] }}</td> 
-                {% endfor %}
+            {% for i in range(tamanho_recomendacao) %} 
+            <tr> 
+                <td>{{ recomendacoes[i] }}</td> 
             </tr> 
             {% endfor %} 
         </tbody> 
