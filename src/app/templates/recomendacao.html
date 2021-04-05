@@ -20,13 +20,11 @@
             </tr>
         </thead>  
         <tbody> 
-            {% for i in range(dados_filtrado.shape[0]) %} 
             <tr>
                 {% for j in range(dados_filtrado.shape[1]) %}  
-                    <td>{{ dados_filtrado[i:i+1].values[0][j] }}</td> 
+                    <td>{{ dados_filtrado[0:1].values[0][j] }}</td> 
                 {% endfor %}
             </tr> 
-            {% endfor %} 
         </tbody> 
     </table> 
 </div>

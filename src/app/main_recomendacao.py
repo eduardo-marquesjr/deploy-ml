@@ -18,7 +18,7 @@ def home():
 @app.route('/recomenda/' , methods = ['POST']) 
 def recomenda():
     conta = int(request.form['conta']) 
-    dados_filtrado = dados_nomes[['Conta','Produto','Categoria-Segmento','Tipo', 'Profissão', 'Estado Civil', 'Estado', 'Perfil do Cliente',
+    dados_filtrado = dados_nomes[['Conta','Tipo','Profissão', 'Estado Civil', 'Estado', 'Perfil do Cliente',
                                  'Tipo Investidor', 'Faixa Cliente', 'Idade']][dados_nomes['Conta'] == conta]
     localiza = dados_nomes[dados_nomes['Conta'] == conta]
     colunas = dados_filtrado.columns.values  
