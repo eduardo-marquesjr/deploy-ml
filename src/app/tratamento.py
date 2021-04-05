@@ -14,7 +14,7 @@ def trata_e_roda():
                             'QUANTIDADE' : 'Quantidade', 'VALOR BRUTO' : 'Valor Bruto',
                             'VALOR LÍQUIDO' : 'Valor Líquido'}, inplace = True)
 
-    base_btg_clientes = pd.read_excel('data/raw/base_btg.xls')
+    base_btg_clientes = pd.read_excel('data/raw/base_btg.xlsx')
     base_btg_clientes['Aniversário'] = pd.to_datetime(base_btg_clientes.Aniversário).dt.tz_localize(None) 
     base_btg_clientes['Idade'] = (dt.datetime.today() - base_btg_clientes.Aniversário) / 365
     base_btg_clientes.Idade = base_btg_clientes.Idade.astype('str')
