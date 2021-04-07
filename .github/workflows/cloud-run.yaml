@@ -22,7 +22,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.RUN_PROJECT }}
   RUN_REGION: us-central1
-  RUN_PLATFORM: managed
+  RUN_PLATFORM: "managed"
   SERVICE_NAME: ccm-recomendacao-potenza
   PORT: 100
 
