@@ -52,7 +52,7 @@ jobs:
     # Deploy image to Cloud Run
     - name: Deploy
       run: |-
-        gcloud run deploy "$SERVICE_NAME" \
+        gcloud run deploy --image=gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA \
           --quiet \ 
           --region "$RUN_REGION" \
           --image "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
