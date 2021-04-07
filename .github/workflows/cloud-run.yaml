@@ -23,6 +23,7 @@ env:
   PROJECT_ID: ${{ secrets.RUN_PROJECT }}
   RUN_REGION: us-central1
   SERVICE_NAME: ccm-recomendacao-potenza
+  PORT: 100
 
 jobs:
   setup-build-deploy:
@@ -56,5 +57,5 @@ jobs:
           --image "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
           --platform "managed" \
           --allow-unauthenticated \
-          --port 100
+          --port "$PORT"
 
