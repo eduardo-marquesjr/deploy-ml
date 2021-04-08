@@ -49,11 +49,7 @@ jobs:
         
     # Deploy image to Cloud Run
     - name: Deploy
-      run: |-
-        gcloud run deploy --image "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
-          --quiet \ 
-          --region ${{ secrets.RUN_REGION }} \
-          --platform ${{ secrets.RUN_PLATFORM }} \
+      run: gcloud run deploy ccm-recomendacao-potenza --region=uscentral1 --platform=managed --image=gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA \
           --allow-unauthenticated \
           --port "$PORT"
 
