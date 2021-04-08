@@ -50,10 +50,9 @@ jobs:
     # Deploy image to Cloud Run
     - name: Deploy
       run: |-
-        gcloud run deploy "$SERVICE_NAME" \
+        gcloud run deploy --image "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
           --quiet \ 
           --region ${{ secrets.RUN_REGION }} \
-          --image "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
           --platform ${{ secrets.RUN_PLATFORM }} \
           --allow-unauthenticated \
           --port "$PORT"
