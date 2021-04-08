@@ -55,8 +55,8 @@ jobs:
         gcloud run deploy --image=gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA \
           --quiet \ 
           --region "$RUN_REGION" \
-          --platform "$_PLATFORM" \
           --image "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
+          --platform "managed" \
           --allow-unauthenticated \
           --port "$PORT"
 
