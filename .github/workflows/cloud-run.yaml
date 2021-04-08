@@ -10,7 +10,7 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License
+# limitations under the License.
 
 name: Build and Deploy to Cloud Run
 
@@ -22,7 +22,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.RUN_PROJECT }}
   RUN_REGION: us-central1
-  RUN_PLATFORM: "managed"
+  _PLATFORM: managed
   SERVICE_NAME: ccm-recomendacao-potenza
   PORT: 100
 
@@ -55,7 +55,7 @@ jobs:
         gcloud run deploy --image=gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA \
           --quiet \ 
           --region "$RUN_REGION" \
-          --platform "$RUN_PLATFORM" \
+          --platform "$_PLATFORM" \
           --image "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA" \
           --allow-unauthenticated \
           --port "$PORT"
