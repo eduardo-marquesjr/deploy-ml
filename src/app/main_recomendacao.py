@@ -1,3 +1,4 @@
+#encoding: utf-8
 from flask import Flask, render_template, request, redirect, session, flash, url_for
 import pandas as pd
 import os
@@ -18,8 +19,8 @@ def home():
 @app.route('/recomenda/' , methods = ['POST']) 
 def recomenda():
     conta = int(request.form['conta']) 
-    dados_filtrado = dados_nomes[['Conta','Tipo','Profissão', 'Estado Civil', 'Estado', 'Perfil do Cliente',
-                                 'Tipo Investidor', 'Faixa Cliente', 'Idade']][dados_nomes['Conta'] == conta]
+    dados_filtrado = dados_nomes[['Conta','Tipo','Profissao', 'Estado_Civil', 'Estado', 'Perfil_do_Cliente',
+                                 'Tipo_Investidor', 'Faixa_Cliente', 'Idade']][dados_nomes['Conta'] == conta]
     localiza = dados_nomes[dados_nomes['Conta'] == conta]
     colunas = dados_filtrado.columns.values  
     cluster = localiza.Clusters.unique()[0] 
