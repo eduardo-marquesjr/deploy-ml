@@ -11,8 +11,6 @@ warnings.filterwarnings('ignore')
 def trata_e_roda():
     base_btg_produtos1 = 'SELECT * FROM `pristine-bonito-301012.ccmteste.pos`'
     base_btg_produtos = pd.read_gbq(base_btg_produtos1) 
-    base_btg_produtos = base_btg_produtos.drop_duplicates() 
-    base_btg_produtos = base_btg_produtos.reset_index()
     base_btg_produtos.rename(columns = {'CONTA': 'Conta', 'MERCADO': 'Mercado', 'PRODUTO' : 'Produto',
                             'SEGMENTO' : 'Segmento', 'ATIVO' : 'Ativo', 'VENCIMENTO' : 'Vencimento',
                             'QUANTIDADE' : 'Quantidade', 'valor_bruto' : 'Valor Bruto',
@@ -20,8 +18,6 @@ def trata_e_roda():
     
     base_btg_clientes1 = 'SELECT * FROM `pristine-bonito-301012.ccmteste.base_btg`'
     base_btg_clientes = pd.read_gbq(base_btg_clientes1)
-    base_btg_clientes = base_btg_clientes.drop_duplicates() 
-    base_btg_clientes = base_btg_clientes.reset_index()
     base_btg_clientes.rename(columns = {'profissao': 'Profissao', 'Aniversário' : 'Aniversario', }
                              , inplace = True)
     base_btg_clientes['Aniversario'] = pd.to_datetime(base_btg_clientes.Aniversario).dt.tz_localize(None) 
