@@ -10,6 +10,8 @@
 
 {% block conteudo %}
 
+<p>Cliente:</p>
+    
 <div class="tabela1">
     <table class="table table-striped table-responsive table-bordered">
         <thead class="thead-default">
@@ -28,10 +30,47 @@
         </tbody> 
     </table> 
 </div>
+    
+<p>Carteira:</p>
+    
+<div class="tabela2">
+    <table class="table table-striped table-responsive table-bordered">
+        <thead class="thead-default">
+            <tr>
+                {% for coluna in colunas2 %}
+                    <th>{{ coluna }}</th>
+                {% endfor %}
+            </tr>
+        </thead>  
+        <tbody> 
+            <tr>
+                <td>{{ dados_filtrado2 }}</td> 
+            </tr> 
+        </tbody> 
+    </table> 
+</div>
 
+<p>Balanceamento de carteira segundo a Fronteira Eficiente de Markowitz:</p>    
+<div class="tabela3">
+    <table class="table table-striped table-responsive table-bordered">
+        <thead class="thead-default">
+            <tr>
+                {% for coluna in colunas3 %}
+                    <th>{{ coluna }}</th>
+                {% endfor %}
+            </tr>
+        </thead>  
+        <tbody> 
+            <tr>
+                <td>{{ carteira_maior_sharpe }}</td> 
+            </tr> 
+        </tbody> 
+    </table> 
+</div>
+    
 <p>Recomendações:</p>
 
-<div class="tabela2">
+<div class="tabela4">
     <table class="table table-striped table-responsive table-bordered font-size:smaller">
         <tbody> 
             {% for i in range(tamanho_recomendacao) %} 
