@@ -1,5 +1,5 @@
 #encoding: utf-8
-# trata e roda..
+# trata e roda...
 import pandas as pd
 import datetime as dt
 import math
