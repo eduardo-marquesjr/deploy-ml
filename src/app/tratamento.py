@@ -102,7 +102,7 @@ def trata_e_roda():
     yesterday = dt.date.today() - dt.timedelta(1)
     yesterday = str(yesterday) 
     dados_precos = pd.DataFrame() 
-    not_find = ['ABCB2.SA', 'BBASN361.SA', 'BBDCC285.SA', 'BBDCC293.SA', 'BBDCN234.SA', 'BBDCN256.SA',
+    not_find = ['ABCB2.SA', 'AERI3.SA','BBASN361.SA', 'BBDCC285.SA', 'BBDCC293.SA', 'BBDCN234.SA', 'BBDCN256.SA',
                'BBDCN271.SA', 'BBDCO197.SA', 'BBDCO256.SA', 'BOVAN110.SA', 'BRMLN820.SA',
                'CNTO3.SA', 'COGNB480.SA', 'COGNC40.SA', 'COGNC750.SA', 'CPTS12.SA', 'CSNAC389.SA', 
                'CSNAN32.SA', 'CSNAO329.SA', 'CVBI12.SA', 'CYREB320.SA', 'DMMO11.SA', 'GGBRB268.SA',
@@ -120,7 +120,7 @@ def trata_e_roda():
     retorno = dados_precos.pct_change()
     retorno = retorno.iloc[1:] 
     retorno_anual = retorno.mean() * 250
-    cov_diaria = retorno.cov()
+    cov_diaria = retorno.cov() 
     cov_anual = cov_diaria * 250
 
     SEED = 42 

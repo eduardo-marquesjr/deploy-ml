@@ -44,8 +44,14 @@
         </thead>  
         <tbody> 
             <tr>
-                <td>{{ dados_filtrado2 }}</td> 
-            </tr> 
+            {% for i in range(dados_filtrado2.shape[0]) %}
+                <tr>
+                    {% for j in range(dados_filtrado2.shape[1]) %}
+                        <td>{{ dados_filtrado2[i:i+1].values[0][j] }}</td>  
+                    {% endfor %}
+                </tr>
+            {% endfor %} 
+            </tr>
         </tbody> 
     </table> 
 </div>
@@ -62,7 +68,9 @@
         </thead>  
         <tbody> 
             <tr>
-                <td>{{ carteira_maior_sharpe }}</td> 
+            {% for n in range(carteira_maior_sharpe.shape[1]) %}
+                <td>{{ carteira_maior_sharpe[0:1].values[0][n] }}</td>
+            {% endfor %} 
             </tr> 
         </tbody> 
     </table> 

@@ -52,7 +52,7 @@ def recomenda():
         pesos_carteira = np.random.random(num_assets)
         pesos_carteira /= np.sum(pesos_carteira)
         returns = np.dot(pesos_carteira, retorno_anual.loc[produtos_carteira1])
-        volatility = np.sqrt(np.dot(pesos_carteira.T, np.dot(cov_anual[produtos_carteira1].loc[produtos_carteira1], pesos_carteira)))
+        volatility = np.sqrt(np.dot(pesos_carteira.T, np.dot(cov_anual[produtos_carteira1].loc[produtos_carteira1],pesos_carteira)))
         port_returns.append(returns) 
         port_volatility.append(volatility)
         stock_weights.append(pesos_carteira) 
@@ -68,6 +68,7 @@ def recomenda():
                           
     maior_sharpe = df['Sharpe'].max()
     carteira_maior_sharpe = df.loc[df['Sharpe'] == maior_sharpe] 
+    carteira_maior_sharpe = round(carteira_maior_sharpe, 3)
     colunas3 = carteira_maior_sharpe.columns.values
     
     return render_template('recomendacao.html', dados_filtrado = dados_filtrado, colunas = colunas, 
