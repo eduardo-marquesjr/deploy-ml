@@ -11,6 +11,6 @@ COPY  ./data /usr/data
 
 ENTRYPOINT [ "python3" ]
 
-CMD [ "src/app/main_recomendacao.py" ]
+CMD [ "src/app/main_recomendacao_v2.py" ]
 
 
