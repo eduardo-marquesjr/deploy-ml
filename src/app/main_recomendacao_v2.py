@@ -248,4 +248,4 @@ def recomenda(conta):
     return jsonify(Dados=json_final)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=200)   
+    app.run(debug=True, host='0.0.0.0', port=100)   
