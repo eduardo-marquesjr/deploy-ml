@@ -34,18 +34,11 @@ def trata_e_roda():
     for i in range(base_btg_clientes.shape[0]):
         base_btg_clientes.Idade[i] = base_btg_clientes.Idade[i][:2] 
 
-    dados = base_btg_clientes.drop(['Nome','Aniversario','Cidade','Código do Escritório', 'Escritório',
-                                    'Código do Assessor', 'Assessor','E-mail', 'Qtd de Ativos',
-                                    'Qtd Fundos', 'Qtd Renda Fixa', 'Qtd Renda Variável',
-                                    'Qtd Previdência', 'Qtd Derivativos', 'Qtd Valor em Trânsito',
-                                    'PL Total', 'Conta Corrente', 'Fundos', 'Renda Fixa',
-                                    'Renda Variável', 'Previdência', 'Derivativos',
-                                    'Valor em Trânsito', 'Renda Anual', 'PL Declarado',
-                                    'Data de Abertura', 'Data Vínculo', '1º Aporte', 'Último Aporte',
-                                    'Qtd de Aportes', 'Aportes', 'Retiradas', 'Data (texto)', 'Data'],
+    dados = base_btg_clientes.drop(['Nome', 'Codigo_do_Escritorio', 'Escritorio', 
+                                    'Codigo_do_Assessor', 'Assessor', 'Cidade',
+                                    'Aniversario', 'email', 'data_abertura', 'data_vinculo',
+                                   'primeiro_aporte', 'ult_aporte'],
                                     axis = 1)
-
-    dados['Profissao'] = dados['Profissao'].astype('str')
 
     for i in range(dados.shape[0]):
         if dados.Profissao[i] != 'nan':
