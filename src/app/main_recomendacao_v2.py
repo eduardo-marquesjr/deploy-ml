@@ -123,8 +123,9 @@ def trata_e_roda():
                'IRBRB760.SA', 'IRBRB800.SA', 'IRBRC107.SA', 'IRBRC115.SA', 'IRBRN610.SA', 'ITUBC301.SA',
                'ITUBN297.SA', 'ITUBO252.SA', 'ITUBO292.SA', 'JBSSB270.SA', 'LAME1.SA', 'LAME2.SA',
                'OUJP12.SA', 'PETRB299.SA', 'PETRB317.SA', 'PETRC309.SA', 'PTAX800.SA', 'RLOG3.SA',
-               'VALEN937.SA','VALEO922.SA', 'VALEO962.SA', 'VILG14.SA', 'VIVR1.SA', 'VVARB155.SA',
-               'VVARB160.SA', 'VVARC155.SA', 'VVARC170.SA']          
+               'TIET11.SA', 'VALEN937.SA','VALEO922.SA', 'VALEO962.SA', 'VILG14.SA', 'VIVR1.SA', 'VVARB155.SA',
+               'VVARB160.SA', 'VVARC155.SA', 'VVARC170.SA']    
+    
     for ativo in carteira: 
         if ativo not in not_find:
             dados_precos[ativo] = pdr.DataReader(ativo, data_source = 'yahoo', 
@@ -236,9 +237,12 @@ def recomenda(conta):
     json_carteira[dados_filtrado2.columns.values[5]] = lista_categoria
     
     json_balanco = {}
-    for n in range(len(carteira_maior_sharpe.columns.values)):
-        json_balanco[carteira_maior_sharpe.columns.values[n]] = carteira_maior_sharpe[0:1].values[0][n] 
-
+    if len(carteira_maior_sharpe) > 0:
+        for n in range(len(carteira_maior_sharpe.columns.values)):
+            json_balanco[carteira_maior_sharpe.columns.values[n]] = carteira_maior_sharpe[0:1].values[0][n] 
+    else:
+        json_balanco = {}
+        
     json_recomendacoes = {'Recomendacoes' : recomendacoes}
 
     json_final = {
@@ -251,4 +255,4 @@ def recomenda(conta):
     return jsonify(Dados=json_final)
 
 if __name__ == '__main__':
-    app.run(debug=True,host='0.0.0.0', port=200)   
+    app.run(debug=True, host='0.0.0.0', port=200)   
