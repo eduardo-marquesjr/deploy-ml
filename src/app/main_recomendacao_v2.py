@@ -41,19 +41,19 @@ def trata_e_roda():
                                     axis = 1)
 
     for i in range(dados.shape[0]):
-        if dados.Profissao[i] != 'nan':
+        if dados.Profissao[i] != None:
             dados.Profissao[i] = dados.Profissao[i].upper() 
 
     for i in range(dados.shape[0]):
-        if dados.Profissao[i] != 'nan' and dados.Profissao[i].find('(') != -1:
+        if dados.Profissao[i] != None and dados.Profissao[i].find('(') != -1:
             dados.Profissao[i] = dados.Profissao[i][:-4] 
 
     for i in range(dados.shape[0]):
-        if dados.Profissao[i] != 'nan' and dados.Profissao[i].find('/') != -1:
+        if dados.Profissao[i] != None and dados.Profissao[i].find('/') != -1:
             dados.Profissao[i] = dados.Profissao[i][:dados.Profissao[i].find('/')-1]
 
     for i in range(dados.shape[0]):
-        if dados.Profissao[i] != 'nan' and dados.Profissao[i].find('(A)') != -1:
+        if dados.Profissao[i] != None and dados.Profissao[i].find('(A)') != -1:
             dados.Profissao[i] = dados.Profissao[i][:dados.Profissao[i].find('A')-1]
 
     for i in range(dados.shape[0]):
