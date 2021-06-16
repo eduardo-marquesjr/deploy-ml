@@ -144,7 +144,9 @@ def trata_e_roda():
     segmento = dados_nomes.Segmento
     dados_nomes['Categoria-Segmento'] = categoria + '-' + segmento
 
-    dados_usuarios = pd.read_csv('C:/Users/emjunior/recomendacao-potenza/potenza.csv', sep = ';')
+    dados_usuarios = pd.read_gbq('SELECT * FROM `pristine-bonito-301012.ccmteste.login`', project_id='pristine-bonito-301012')
+    dados_usuarios = dados_usuarios.drop_duplicates()
+    dados_usuarios = dados_usuarios.reset_index() 
     return dados_nomes, dados_usuarios, base_btg_produtos, dados_precos, retorno_anual, cov_anual
 
 app = Flask(__name__)
