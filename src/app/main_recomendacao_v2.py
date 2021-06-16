@@ -158,7 +158,7 @@ dados_nomes, dados_usuarios, base_btg_produtos, dados_precos, retorno_anual, cov
 
 @app.route('/home')
 def home():
-    return 'Olá, mundo'
+    return 'Olá, CCMers'
 
 @app.route('/recomenda/<int:conta>') 
 def recomenda(conta): 
