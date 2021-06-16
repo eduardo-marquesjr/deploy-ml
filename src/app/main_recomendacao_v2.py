@@ -116,7 +116,7 @@ def trata_e_roda():
                'IRBRB760.SA', 'IRBRB800.SA', 'IRBRC107.SA', 'IRBRC115.SA', 'IRBRN610.SA', 'ITUBC301.SA',
                'ITUBN297.SA', 'ITUBO252.SA', 'ITUBO292.SA', 'JBSSB270.SA', 'LAME1.SA', 'LAME2.SA',
                'OUJP12.SA', 'PETRB299.SA', 'PETRB317.SA', 'PETRC309.SA', 'PTAX800.SA', 'RLOG3.SA',
-               'TIET11.SA', 'VALEN937.SA','VALEO922.SA', 'VALEO962.SA', 'VILG14.SA', 'VIVR1.SA', 'VVARB155.SA',
+               'TIET11.SA', 'VALEN937.SA', 'VALEO922.SA', 'VALEO962.SA', 'VILG14.SA', 'VIVR1.SA', 'VVARB155.SA',
                'VVARB160.SA', 'VVARC155.SA', 'VVARC170.SA']    
     
     for ativo in carteira: 
