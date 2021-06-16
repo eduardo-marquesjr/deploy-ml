@@ -2,11 +2,11 @@
 from flask import Flask, render_template, request, redirect, session, flash, url_for, jsonify
 from flask_basicauth import BasicAuth
 import pandas as pd
+import yfinance as yf
 import datetime as dt
 import numpy as np
 import os
 from pandas_datareader import data as pdr
-from textblob import TextBlob
 import pickle
 import datetime as dt
 import math
@@ -18,14 +18,14 @@ warnings.filterwarnings('ignore')
 def trata_e_roda():
     # -*- coding: utf-8 -*-
     base_btg_produtos1 = 'SELECT * FROM `pristine-bonito-301012.ccmteste.pos`'
-    base_btg_produtos = pd.read_gbq(base_btg_produtos1) 
+    base_btg_produtos = pd.read_gbq(base_btg_produtos1, project_id='pristine-bonito-301012') 
     base_btg_produtos.rename(columns = {'CONTA': 'Conta', 'MERCADO': 'Mercado', 'PRODUTO' : 'Produto',
                             'SEGMENTO' : 'Segmento', 'ATIVO' : 'Ativo', 'VENCIMENTO' : 'Vencimento',
                             'QUANTIDADE' : 'Quantidade', 'valor_bruto' : 'Valor Bruto',
                             'valor_liq' : 'Valor Líquido'}, inplace = True)
-    
+
     base_btg_clientes1 = 'SELECT * FROM `pristine-bonito-301012.ccmteste.base_btg`'
-    base_btg_clientes = pd.read_gbq(base_btg_clientes1)
+    base_btg_clientes = pd.read_gbq(base_btg_clientes1, project_id='pristine-bonito-301012')
     base_btg_clientes.rename(columns = {'profissao': 'Profissao', 'Aniversário' : 'Aniversario', }
                              , inplace = True) 
     base_btg_clientes['Aniversario'] = pd.to_datetime(base_btg_clientes.Aniversario).dt.tz_localize(None) 
@@ -40,20 +40,22 @@ def trata_e_roda():
                                    'primeiro_aporte', 'ult_aporte'],
                                     axis = 1)
 
+    dados['Profissao'] = dados['Profissao'].astype('str')
+
     for i in range(dados.shape[0]):
-        if dados.Profissao[i] != None:
+        if dados.Profissao[i] != 'nan':
             dados.Profissao[i] = dados.Profissao[i].upper() 
 
     for i in range(dados.shape[0]):
-        if dados.Profissao[i] != None and dados.Profissao[i].find('(') != -1:
+        if dados.Profissao[i] != 'nan' and dados.Profissao[i].find('(') != -1:
             dados.Profissao[i] = dados.Profissao[i][:-4] 
 
     for i in range(dados.shape[0]):
-        if dados.Profissao[i] != None and dados.Profissao[i].find('/') != -1:
+        if dados.Profissao[i] != 'nan' and dados.Profissao[i].find('/') != -1:
             dados.Profissao[i] = dados.Profissao[i][:dados.Profissao[i].find('/')-1]
 
     for i in range(dados.shape[0]):
-        if dados.Profissao[i] != None and dados.Profissao[i].find('(A)') != -1:
+        if dados.Profissao[i] != 'nan' and dados.Profissao[i].find('(A)') != -1:
             dados.Profissao[i] = dados.Profissao[i][:dados.Profissao[i].find('A')-1]
 
     for i in range(dados.shape[0]):
@@ -116,13 +118,11 @@ def trata_e_roda():
                'IRBRB760.SA', 'IRBRB800.SA', 'IRBRC107.SA', 'IRBRC115.SA', 'IRBRN610.SA', 'ITUBC301.SA',
                'ITUBN297.SA', 'ITUBO252.SA', 'ITUBO292.SA', 'JBSSB270.SA', 'LAME1.SA', 'LAME2.SA',
                'OUJP12.SA', 'PETRB299.SA', 'PETRB317.SA', 'PETRC309.SA', 'PTAX800.SA', 'RLOG3.SA',
-               'TIET11.SA', 'VALEN937.SA', 'VALEO922.SA', 'VALEO962.SA', 'VILG14.SA', 'VIVR1.SA', 'VVARB155.SA',
-               'VVARB160.SA', 'VVARC155.SA', 'VVARC170.SA']    
-    
+               'TIET11.SA', 'VALEN937.SA','VALEO922.SA', 'VALEO962.SA', 'VILG14.SA', 'VIVR1.SA', 'VVARB155.SA',
+               'VVARB160.SA', 'VVARC155.SA', 'VVARC170.SA']          
     for ativo in carteira: 
         if ativo not in not_find:
-            dados_precos[ativo] = pdr.DataReader(ativo, data_source = 'yahoo', 
-            start = '2014-01-01')['Adj Close'] 
+            dados_precos[ativo] = yf.download(ativo, start = '2014-01-01', end = yesterday)['Adj Close']
             
     dados_precos = dados_precos.fillna(method = 'bfill') 
     retorno = dados_precos.pct_change()
@@ -144,9 +144,7 @@ def trata_e_roda():
     segmento = dados_nomes.Segmento
     dados_nomes['Categoria-Segmento'] = categoria + '-' + segmento
 
-    dados_usuarios = pd.read_gbq('SELECT * FROM `pristine-bonito-301012.ccmteste.login`')
-    dados_usuarios = dados_usuarios.drop_duplicates()
-    dados_usuarios = dados_usuarios.reset_index() 
+    dados_usuarios = pd.read_csv('C:/Users/emjunior/recomendacao-potenza/potenza.csv', sep = ';')
     return dados_nomes, dados_usuarios, base_btg_produtos, dados_precos, retorno_anual, cov_anual
 
 app = Flask(__name__)
@@ -235,7 +233,7 @@ def recomenda(conta):
             json_balanco[carteira_maior_sharpe.columns.values[n]] = carteira_maior_sharpe[0:1].values[0][n] 
     else:
         json_balanco = {}
-        
+
     json_recomendacoes = {'Recomendacoes' : recomendacoes}
 
     json_final = {
