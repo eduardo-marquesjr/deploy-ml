@@ -1,5 +1,7 @@
 FROM python:3.8.3-slim
 
+ENV GOOGLE_APPLICATION_CREDENTIALS="src/pristine-bonito-301012-7eb9e317fe07.json"
+
 COPY ./requirements.txt /usr/requirements.txt
 
 WORKDIR /usr
