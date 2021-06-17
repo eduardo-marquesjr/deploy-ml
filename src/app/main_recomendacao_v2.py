@@ -138,13 +138,14 @@ def trata_e_roda():
     dados['Clusters'] = kmeans.labels_
 
     dados_nomes = pd.merge(base_btg_produtos.copy(), dados.copy(), 
-                    on = 'Conta', how = 'left', suffixes = ('_p','_c')) 
+                    on = 'Conta', how = 'right', suffixes = ('_p','_c')) 
 
     categoria = dados_nomes.Categoria
     segmento = dados_nomes.Segmento
     dados_nomes['Categoria-Segmento'] = categoria + '-' + segmento
 
-    dados_usuarios = pd.read_gbq('SELECT * FROM `pristine-bonito-301012.ccmteste.login`', project_id='pristine-bonito-301012')
+    dados_usuarios = pd.read_gbq('SELECT * FROM `pristine-bonito-301012.ccmteste.login`', 
+                                                                    project_id='pristine-bonito-301012')
     dados_usuarios = dados_usuarios.drop_duplicates()
     dados_usuarios = dados_usuarios.reset_index() 
     return dados_nomes, dados_usuarios, base_btg_produtos, dados_precos, retorno_anual, cov_anual
@@ -159,6 +160,18 @@ dados_nomes, dados_usuarios, base_btg_produtos, dados_precos, retorno_anual, cov
 @app.route('/home')
 def home():
     return 'Olá, CCMers'
+
+@app.route('/contas')
+def contas():
+    dados_contas = []
+    dados_contas_final = {} 
+    dados_contas_str = dados_nomes.Conta
+    dados_contas_str = dados_contas_str.astype('O')
+    for k in range(len(dados_nomes.Conta.unique())):
+        dados_contas.append(dados_contas_str.unique()[k])
+    dados_contas_final['Contas'] = dados_contas
+    # dados_contas_final = {'Contas' : dados_contas_final}
+    return jsonify(Data=dados_contas_final) 
 
 @app.route('/recomenda/<int:conta>') 
 def recomenda(conta): 
@@ -245,7 +258,7 @@ def recomenda(conta):
         'Recomendacoes' : json_recomendacoes
     }
 
-    return jsonify(Dados=json_final)
+    return jsonify(Data=json_final)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=100)   
