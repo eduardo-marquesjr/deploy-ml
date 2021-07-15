@@ -13,6 +13,7 @@ import math
 from sklearn.cluster import KMeans
 from sklearn import metrics 
 import warnings
+import json
 warnings.filterwarnings('ignore') 
 
 def trata_e_roda():
