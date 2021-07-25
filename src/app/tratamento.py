@@ -12,13 +12,12 @@ from sklearn.cluster import KMeans
 from sklearn import metrics 
 import warnings
 import json
-import mysql.connector
 import time
 warnings.filterwarnings('ignore')
 
-def conecta():
-    import mysql.connector
-    mydb = mysql.connector.connect(
+def get_tabela(nome_tabela):
+    import mysql.connector 
+    mydb = mysql.connector.connect( 
     host = "10.0.0.2",
     port = "3306", 
     user = 'dataprep_potenza_ro',
@@ -26,23 +25,18 @@ def conecta():
     database = "dataprep_potenza",
     auth_plugin = 'mysql_native_password',
     use_unicode=True, 
-    charset="utf8")  
-    return mydb
-
-
-def get_tabela(nome_tabela):
-    mydb = conecta()
+    charset="utf8") 
     mycursor = mydb.cursor() 
     select = "SELECT * FROM" + ' ' + nome_tabela + ' ' + "LIMIT 50000" 
     mycursor.execute(select) 
     myresult = mycursor.fetchall() 
-    tabela = pd.DataFrame(myresult, columns = mycursor.column_names) 
-    for coluna in tabela.columns:
-        for i in range(len(tabela[coluna])):
-            if type(tabela[coluna][i]) == bytearray or type(tabela[coluna][i]) == bytes:
-                tabela[coluna][i] = str(tabela[coluna][i], 'utf-8') 
+    tabela_banco = pd.DataFrame(myresult, columns = mycursor.column_names) 
+    for coluna in tabela_banco.columns:
+        for i in range(len(tabela_banco[coluna])):
+            if type(tabela_banco[coluna][i]) == bytearray or type(tabela_banco[coluna][i]) == bytes:
+                tabela_banco[coluna][i] = str(tabela_banco[coluna][i], 'utf-8') 
     
-    return tabela 
+    return tabela_banco
 
 def get_tabela_cotas(ano_mes):
     base_btg_produtos = get_tabela('posicao_potenza') 
@@ -244,33 +238,61 @@ def trata_e_roda():
     dados_precos.dropna(axis = 1, inplace = True) 
 
     cotas_fundos_cvm_abril_19 = get_tabela_cotas("201904") 
+    print("201904")
     cotas_fundos_cvm_maio_19 = get_tabela_cotas("201905")  
+    print("201905")
     cotas_fundos_cvm_junho_19 = get_tabela_cotas("201906") 
+    print("201906")
     cotas_fundos_cvm_julho_19 = get_tabela_cotas("201907") 
+    print("201907")
     cotas_fundos_cvm_agosto_19 = get_tabela_cotas("201908") 
+    print("201908")
     cotas_fundos_cvm_setembro_19 = get_tabela_cotas("201909") 
+    print("201909")
     cotas_fundos_cvm_outubro_19 = get_tabela_cotas("201910") 
+    print("201910")
     cotas_fundos_cvm_novembro_19 = get_tabela_cotas("201911") 
+    print("201911")
     cotas_fundos_cvm_dezembro_19 = get_tabela_cotas("201912") 
+    print("201912")
     cotas_fundos_cvm_janeiro_20 = get_tabela_cotas("202001") 
+    print("202001")
     cotas_fundos_cvm_fevereiro_20 = get_tabela_cotas("202002") 
+    print("202002")
     cotas_fundos_cvm_marco_20 = get_tabela_cotas("202003") 
+    print("202003")
     cotas_fundos_cvm_abril_20 = get_tabela_cotas("202004") 
+    print("202004")
     cotas_fundos_cvm_maio_20 = get_tabela_cotas("202005")  
+    print("202005")
     cotas_fundos_cvm_junho_20 = get_tabela_cotas("202006")  
+    print("202006")
     cotas_fundos_cvm_julho_20 = get_tabela_cotas("202007")  
+    print("202007")
     cotas_fundos_cvm_agosto_20 = get_tabela_cotas("202008")  
+    print("202008")
     cotas_fundos_cvm_setembro_20 = get_tabela_cotas("202009")  
+    print("202009")
     cotas_fundos_cvm_outubro_20 = get_tabela_cotas("202010")  
+    print("202010")
     cotas_fundos_cvm_novembro_20 = get_tabela_cotas("202011")  
+    print("202011")
     cotas_fundos_cvm_dezembro_20 = get_tabela_cotas("202012")
+    print("202012")
     cotas_fundos_cvm_janeiro_21 = get_tabela_cotas("202101")
+    print("202101")
     cotas_fundos_cvm_fevereiro_21 = get_tabela_cotas("202102") 
+    print("202102")
     cotas_fundos_cvm_marco_21 = get_tabela_cotas("202103")
+    print("202103")
     cotas_fundos_cvm_abril_21 = get_tabela_cotas("202104")
+    print("202104")
     cotas_fundos_cvm_maio_21 = get_tabela_cotas("202105") 
+    print("202105")
     cotas_fundos_cvm_junho_21 = get_tabela_cotas("202106")
+    print("202106")
     cotas_fundos_cvm_julho_21 = get_tabela_cotas("202107")   
+    print("202107")
 
     dados_fundos = pd.DataFrame()
     dados_fundos = pd.concat([cotas_fundos_cvm_abril_19, cotas_fundos_cvm_maio_19, cotas_fundos_cvm_junho_19, 
