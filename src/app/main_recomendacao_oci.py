@@ -13,7 +13,8 @@ import warnings
 import json
 import mysql.connector
 import time 
-from tratamento import trata_e_roda
+from tratamento import get_tabela_cotas
+from tratamento2 import trata_e_roda
 warnings.filterwarnings('ignore') 
 
 app = Flask(__name__)
@@ -21,7 +22,103 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 app.config['JSON_AS_ASCII'] = False
 app.secret_key = 'ccm'
 
-dados_nomes, dados_produtos, dados_precos_fundos, retorno_anual, cov_anual = trata_e_roda()
+dados_nomes, dados_produtos, dados_precos = trata_e_roda()
+
+cotas_fundos_cvm_abril_19 = get_tabela_cotas("201904") 
+print("201904")
+cotas_fundos_cvm_maio_19 = get_tabela_cotas("201905")  
+print("201905")
+cotas_fundos_cvm_junho_19 = get_tabela_cotas("201906") 
+print("201906")
+cotas_fundos_cvm_julho_19 = get_tabela_cotas("201907") 
+print("201907")
+cotas_fundos_cvm_agosto_19 = get_tabela_cotas("201908") 
+print("201908")
+cotas_fundos_cvm_setembro_19 = get_tabela_cotas("201909") 
+print("201909")
+cotas_fundos_cvm_outubro_19 = get_tabela_cotas("201910") 
+print("201910")
+cotas_fundos_cvm_novembro_19 = get_tabela_cotas("201911") 
+print("201911")
+cotas_fundos_cvm_dezembro_19 = get_tabela_cotas("201912") 
+print("201912")
+cotas_fundos_cvm_janeiro_20 = get_tabela_cotas("202001") 
+print("202001")
+cotas_fundos_cvm_fevereiro_20 = get_tabela_cotas("202002") 
+print("202002")
+cotas_fundos_cvm_marco_20 = get_tabela_cotas("202003") 
+print("202003")
+cotas_fundos_cvm_abril_20 = get_tabela_cotas("202004") 
+print("202004")
+cotas_fundos_cvm_maio_20 = get_tabela_cotas("202005")  
+print("202005")
+cotas_fundos_cvm_junho_20 = get_tabela_cotas("202006")  
+print("202006")
+cotas_fundos_cvm_julho_20 = get_tabela_cotas("202007")  
+print("202007")
+cotas_fundos_cvm_agosto_20 = get_tabela_cotas("202008")  
+print("202008")
+cotas_fundos_cvm_setembro_20 = get_tabela_cotas("202009")  
+print("202009")
+cotas_fundos_cvm_outubro_20 = get_tabela_cotas("202010")  
+print("202010")
+cotas_fundos_cvm_novembro_20 = get_tabela_cotas("202011")  
+print("202011")
+cotas_fundos_cvm_dezembro_20 = get_tabela_cotas("202012")
+print("202012")
+cotas_fundos_cvm_janeiro_21 = get_tabela_cotas("202101")
+print("202101")
+cotas_fundos_cvm_fevereiro_21 = get_tabela_cotas("202102") 
+print("202102")
+cotas_fundos_cvm_marco_21 = get_tabela_cotas("202103")
+print("202103")
+cotas_fundos_cvm_abril_21 = get_tabela_cotas("202104")
+print("202104")
+cotas_fundos_cvm_maio_21 = get_tabela_cotas("202105") 
+print("202105")
+cotas_fundos_cvm_junho_21 = get_tabela_cotas("202106")
+print("202106")
+cotas_fundos_cvm_julho_21 = get_tabela_cotas("202107")   
+print("202107")
+
+dados_fundos = pd.DataFrame()
+dados_fundos = pd.concat([cotas_fundos_cvm_abril_19, cotas_fundos_cvm_maio_19, cotas_fundos_cvm_junho_19, 
+cotas_fundos_cvm_julho_19, cotas_fundos_cvm_agosto_19, cotas_fundos_cvm_setembro_19, 
+cotas_fundos_cvm_outubro_19, cotas_fundos_cvm_novembro_19, cotas_fundos_cvm_dezembro_19,
+cotas_fundos_cvm_janeiro_20, cotas_fundos_cvm_fevereiro_20, cotas_fundos_cvm_marco_20,
+cotas_fundos_cvm_abril_20, cotas_fundos_cvm_maio_20, cotas_fundos_cvm_junho_20,
+cotas_fundos_cvm_julho_20, cotas_fundos_cvm_agosto_20, cotas_fundos_cvm_setembro_20,
+cotas_fundos_cvm_outubro_20, cotas_fundos_cvm_novembro_20, cotas_fundos_cvm_dezembro_20,
+cotas_fundos_cvm_janeiro_21, cotas_fundos_cvm_fevereiro_21, cotas_fundos_cvm_marco_21,
+cotas_fundos_cvm_abril_21, cotas_fundos_cvm_maio_21, cotas_fundos_cvm_junho_21,
+cotas_fundos_cvm_julho_21]) 
+
+dados_fundos = dados_fundos.fillna(method = 'bfill') 
+dados_precos.reset_index(inplace = True)
+dados_fundos.reset_index(inplace = True) 
+dados_fundos.rename(columns = {'index': 'Date_p'}, inplace = True) 
+
+dados_fundos['Date_p'] = pd.to_datetime(dados_fundos['Date_p'], format = '%Y-%m-%d') 
+dados_precos['Date'] = pd.to_datetime(dados_precos['Date'], format = '%Y-%m-%d')
+dados_precos2 = dados_precos[dados_precos.Date >= '2019-04-01'] 
+dados_precos2.reset_index(drop = True, inplace = True)   
+dados_fundos2 = dados_fundos.copy() 
+
+dados_precos_fundos = pd.concat([dados_precos2.copy(), dados_fundos2.copy()], axis = 1)
+dados_precos_fundos.set_index('Date', inplace = True) 
+dados_precos_fundos.dropna(inplace = True)
+
+dados_precos_fundos.index = dados_precos_fundos.index.map(str)  
+dados_precos_fundos.reset_index(inplace = True)
+dados_precos_fundos['Date'] = pd.to_datetime(dados_precos_fundos['Date'], format = "%Y-%m-%d")
+dados_precos_fundos.drop('Date_p', inplace = True, axis = 1)  
+dados_precos_fundos.set_index('Date', inplace = True) 
+
+retorno = dados_precos_fundos.pct_change()
+retorno = retorno.iloc[1:] 
+retorno_anual = retorno.mean() * 250
+cov_diaria = retorno.cov() 
+cov_anual = cov_diaria * 250
 
 @app.route('/home')
 def home():
