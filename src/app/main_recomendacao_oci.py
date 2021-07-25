@@ -396,7 +396,7 @@ def recomenda(conta):
     lista_sharpe_ratio = []
 
     num_assets = len(produtos_carteira1)
-    num_portfolios = 10000
+    num_portfolios = 1000
 
     for single_portfolio in range(num_portfolios):
         pesos_carteira = np.random.random(num_assets)
