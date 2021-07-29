@@ -12,6 +12,8 @@ import warnings
 import json
 import mysql.connector
 import time 
+import sys
+from mysql.connector.constants import ClientFlag
 warnings.filterwarnings('ignore') 
 
 mydb = mysql.connector.connect(
@@ -23,9 +25,11 @@ mydb = mysql.connector.connect(
     auth_plugin = 'mysql_native_password',
     use_unicode=True,
     charset="utf8",
+    client_flags=[ClientFlag.SSL],
 ) 
 
-mycursor = mydb.cursor() 
+mycursor = mydb.cursor(buffere=True) 
+mycursor.execute("SHOW STATUS LIKE 'Ssl_cipher'")
 
 def conecta():
     import mysql.connector
