@@ -13,7 +13,6 @@ import json
 import mysql.connector
 import time 
 import sys
-import ssl
 from mysql.connector.constants import ClientFlag
 warnings.filterwarnings('ignore') 
 
