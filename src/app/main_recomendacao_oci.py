@@ -13,6 +13,7 @@ import json
 import mysql.connector
 import time 
 import sys
+import ssl
 from mysql.connector.constants import ClientFlag
 warnings.filterwarnings('ignore') 
 
@@ -25,26 +26,11 @@ mydb = mysql.connector.connect(
     auth_plugin = 'mysql_native_password',
     use_unicode=True,
     charset="utf8",
-    client_flags=[ClientFlag.SSL],
 ) 
 
-mycursor = mydb.cursor(buffere=True) 
-mycursor.execute("SHOW STATUS LIKE 'Ssl_cipher'")
-
-def conecta():
-    import mysql.connector
-    mydb = mysql.connector.connect(
-    host = "10.0.0.2",
-    port = "3306", 
-    user = 'dataprep_potenza_ro',
-    passwd = 'ZfGo#kXMi1MNw52LAvOalt3-HYEatN',
-    database = "dataprep_potenza",
-    auth_plugin = 'mysql_native_password',
-    use_unicode=True, 
-    charset="utf8")  
+mycursor = mydb.cursor() 
 
 def get_tabela(nome_tabela):
-    conecta() 
     select = "SELECT * FROM" + ' ' + nome_tabela + ' ' + "LIMIT 500000" 
     mycursor.execute(select) 
     myresult = mycursor.fetchall() 
@@ -56,6 +42,7 @@ def get_tabela(nome_tabela):
                 
     return tabela 
 
+print('Conectando e puxando as tabelas...')
 base_btg_clientes = get_tabela('base_btg') 
 base_btg_produtos = get_tabela('posicao_potenza') 
 
@@ -336,6 +323,7 @@ fundos_btg_cnpj.reset_index(drop = True, inplace = True)
 # dados_precos_fundos.reset_index(inplace = True)
 # dados_precos_fundos['Date'] = pd.to_datetime(dados_precos_fundos['Date'], format = "%Y-%m-%d")
 # dados_precos_fundos.drop('Date_p', inplace = True, axis = 1)  
+print('Tratando os dados...')
 dados_precos_fundos = get_tabela("dados_precos_fundos")
 dados_precos_fundos.set_index('Date', inplace = True) 
 
@@ -350,6 +338,7 @@ dados_produtos = dados_produtos.drop_duplicates()
 dados_produtos.reset_index(drop = True, inplace = True)
 dados_produtos['Conta'] = dados_produtos['Conta'].astype(int) 
 
+print('Start da API....')
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 app.config['JSON_AS_ASCII'] = False
