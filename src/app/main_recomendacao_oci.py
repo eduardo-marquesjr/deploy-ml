@@ -48,8 +48,8 @@ base_btg_produtos = get_tabela('posicao_potenza')
 base_btg_produtos.rename(columns = {'CONTA': 'Conta', 'NOME' : 'Nome', 'MERCADO': 'Mercado', 
                                     'PRODUTO' : 'Produto', 'SEGMENTO' : 'Segmento', 'ATIVO' : 'Ativo',
                                     'VENCIMENTO' : 'Vencimento',
-                                    'QUANTIDADE' : 'Quantidade', 'VALOR_BRUTO_DEC_1' : 'Valor Bruto'},
-                                     inplace = True)
+                                    'QUANTIDADE' : 'Quantidade', 'VALOR_BRUTO_DEC_1' : 'Valor_Bruto'},
+                                     inplace = True) 
 base_btg_clientes.rename(columns = {'profissao': 'Profissao', 'aniversario' : 'Aniversario'},
                                      inplace = True) 
 
@@ -148,14 +148,13 @@ segmento_ativo.rename(columns = {'PRODUTO' : 'Produto', 'SEGMENTO' : 'Segmento'}
 segmento_ativo.loc[len(segmento_ativo)] = ['CONTA CORRENTE', 'Conta Corrente',
                                            'Conta Corrente', 'Conta Corrente', 'Conta Corrente'] 
 
-dados_produtos = base_btg_produtos.drop(['Nome','EMISSOR', 'Vencimento', 'Quantidade',
-                                            'Valor Bruto', 'Soma_de_IR', 
-                                           'Soma_de_IOF', 'ESCRITÓRIO', 'Data', 'Data_texto'], axis = 1) 
-dados_produtos = dados_produtos.drop_duplicates()
+dados_produtos = base_btg_produtos.drop(['Nome','EMISSOR', 'Vencimento', 'Quantidade','Soma_de_IR', 
+                                           'Soma_de_IOF', 'ESCRITÓRIO', 'Data_texto'], axis = 1) 
+dados_produtos = dados_produtos.drop_duplicates() 
 dados_produtos.reset_index(drop = True, inplace = True)  
 
 dados_produtos = pd.merge(dados_produtos.copy(), segmento_ativo[['Produto','Segmento']].copy(), 
-                    on = 'Produto', how = 'right', suffixes = ('_p','_c'))  
+                    on = 'Produto', how = 'right', suffixes = ('_p','_c'))   
 
 dados_nomes = pd.merge(dados_produtos.copy(), dados.copy(), 
                     on = 'Conta', how = 'right', suffixes = ('_p','_c')) 
@@ -334,8 +333,26 @@ cov_anual = cov_diaria * 250
 
 dados_produtos = dados_produtos[dados_produtos.Conta.notna()]
 dados_produtos = dados_produtos.drop_duplicates() 
-dados_produtos.reset_index(drop = True, inplace = True)
+dados_produtos.reset_index(drop = True, inplace = True) 
 dados_produtos['Conta'] = dados_produtos['Conta'].astype(int) 
+dados_produtos['Valor_Bruto'] = dados_produtos['Valor_Bruto'].apply(lambda x : str(x).replace('.',''))   
+dados_produtos['Valor_Bruto'] = dados_produtos['Valor_Bruto'].astype(float)  
+dados_produtos['Data'] = pd.to_datetime(dados_produtos['Data'], format = '%d %b %Y %H:%M:%S')   
+dados_produtos = dados_produtos.loc[dados_produtos.Data == dados_produtos.Data.max()]   
+dados_produtos.reset_index(drop = True, inplace = True) 
+
+dados_produtos['Total'] = 0
+contas = dados_produtos.Conta.unique()
+for conta in contas:
+    dados_produtos['Total'][dados_produtos.Conta == conta] = dados_produtos.Valor_Bruto[(dados_produtos.Conta == conta) 
+                                                                 & (dados_produtos.Mercado != 'Conta Corrente')].sum() 
+
+for i in range(dados_produtos.shape[0]):
+    if dados_produtos['Mercado'][i] == 'Conta Corrente':
+        dados_produtos['Total'][i] = 1
+
+dados_produtos['Porcentagem (%)'] = dados_produtos['Valor_Bruto'] / dados_produtos['Total'] 
+dados_produtos['Porcentagem (%)'] = round((dados_produtos['Porcentagem (%)'] * 100), 2) 
 
 print('Start da API....')
 app = Flask(__name__)
@@ -364,7 +381,7 @@ def recomenda(conta):
     dados_filtrado = dados_nomes[['Conta','Tipo','Profissao', 'Estado_Civil', 'Estado', 'Perfil_do_Cliente',
                                  'Tipo_Investidor', 'Faixa_Cliente', 'Idade']][dados_nomes['Conta'] == conta]
     dados_filtrado2 = dados_produtos[['Conta', 'Mercado', 'Produto', 'Segmento', 'Ativo', 
-                                         'Categoria']][dados_produtos['Conta'] == conta]
+                                         'Categoria', 'Valor_Bruto', 'Porcentagem (%)']][dados_produtos['Conta'] == conta]
     localiza = dados_nomes[dados_nomes['Conta'] == conta] 
     colunas = dados_filtrado.columns.values  
     colunas2 = dados_filtrado2.columns.values 
@@ -432,13 +449,17 @@ def recomenda(conta):
     lista_segmento = [dados_filtrado2[m:m+1].values[0][3] for m in range(dados_filtrado2.shape[0])]
     lista_ativo = [dados_filtrado2[m:m+1].values[0][4] for m in range(dados_filtrado2.shape[0])]
     lista_categoria = [dados_filtrado2[m:m+1].values[0][5] for m in range(dados_filtrado2.shape[0])]
+    lista_valor = [dados_filtrado2[m:m+1].values[0][6] for m in range(dados_filtrado2.shape[0])]
+    lista_porcentagem = [dados_filtrado2[m:m+1].values[0][7] for m in range(dados_filtrado2.shape[0])]
     json_carteira[dados_filtrado2.columns.values[0]] = lista_conta
     json_carteira[dados_filtrado2.columns.values[1]] = lista_mercado
     json_carteira[dados_filtrado2.columns.values[2]] = lista_produto
     json_carteira[dados_filtrado2.columns.values[3]] = lista_segmento
     json_carteira[dados_filtrado2.columns.values[4]] = lista_ativo
     json_carteira[dados_filtrado2.columns.values[5]] = lista_categoria
-    
+    json_carteira[dados_filtrado2.columns.values[6]] = lista_valor
+    json_carteira[dados_filtrado2.columns.values[7]] = lista_porcentagem
+
     json_balanco = {}
     if len(carteira_maior_sharpe) > 0:
         for n in range(len(carteira_maior_sharpe.columns.values)):
@@ -448,10 +469,16 @@ def recomenda(conta):
 
     json_recomendacoes = {'Recomendacoes' : recomendacoes}
 
+    json_porcentagens = {} 
+    for k in range((dados_filtrado2.shape[0]) - 1):
+        json_porcentagens[dados_filtrado2.Produto.values[k]] = dados_filtrado2['Porcentagem (%)'].values[k]
+    # json_porcentagens.pop('CONTA CORRENTE') 
+
     json_final = {
         'Cliente' : json_cliente,
         'Carteira' : json_carteira,
         'Balanceamento' : json_balanco,
+        'Porcentagens' : json_porcentagens,
         'Recomendacoes' : json_recomendacoes
     }
 
