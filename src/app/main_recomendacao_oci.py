@@ -321,7 +321,7 @@ fundos_btg_cnpj.reset_index(drop = True, inplace = True)
 # dados_precos_fundos.reset_index(inplace = True)
 # dados_precos_fundos['Date'] = pd.to_datetime(dados_precos_fundos['Date'], format = "%Y-%m-%d")
 # dados_precos_fundos.drop('Date_p', inplace = True, axis = 1)  
-print('Tratando os dados...')
+print('Tratando os dados....')
 dados_precos_fundos = get_tabela("dados_precos_fundos")
 dados_precos_fundos.set_index('Date', inplace = True) 
 
