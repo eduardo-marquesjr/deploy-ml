@@ -387,9 +387,9 @@ def recomenda(conta):
     colunas2 = dados_filtrado2.columns.values 
     cluster = localiza.Clusters[0:1].values[0] 
     recomendacoes = dados_nomes[dados_nomes.Clusters == cluster] 
-    recomendacoes = recomendacoes['Categoria-Segmento'][recomendacoes.Clusters == cluster].unique()
-    recomendacoes = [recomendacoes[i] for i in range(len(recomendacoes)) if (recomendacoes[i] != 'Conta Corrente-Conta Corrente') or (recomendacoes[i] != None) or (recomendacoes[i] != 'NaN') or (recomendacoes[i] != 'nan')] 
-    tamanho_recomendacao = len(recomendacoes) 
+    recomendacoes = recomendacoes['Categoria-Segmento'].unique()
+    recomendacoes_final = [recomendacoes[i] for i in range(len(recomendacoes)) if recomendacoes[i] != 'Conta Corrente-Conta Corrente' and recomendacoes[i] != None and recomendacoes[i] != 'NaN' and recomendacoes[i] != 'nan'] 
+    tamanho_recomendacao = len(recomendacoes_final) 
     
     produtos_carteira_acoes = np.unique(dados_produtos[['Produto']][(dados_produtos['Conta'] == conta) 
             & ((dados_produtos['Mercado'] == 'Derivativos') | 
@@ -467,7 +467,7 @@ def recomenda(conta):
     else:
         json_balanco = {}
 
-    json_recomendacoes = {'Recomendacoes' : recomendacoes}
+    json_recomendacoes = {'Recomendacoes' : recomendacoes_final}
 
     json_porcentagens = {} 
     for k in range((dados_filtrado2.shape[0]) - 1):
