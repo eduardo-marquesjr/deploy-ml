@@ -388,7 +388,7 @@ def recomenda(conta):
     cluster = localiza.Clusters[0:1].values[0] 
     recomendacoes = dados_nomes[dados_nomes.Clusters == cluster] 
     recomendacoes = recomendacoes['Categoria-Segmento'][recomendacoes.Clusters == cluster].unique()
-    recomendacoes = [recomendacoes[i] for i in range(len(recomendacoes))] 
+    recomendacoes = [recomendacoes[i] for i in range(len(recomendacoes)) if (recomendacoes[i] != None) or (recomendacoes[i] != 'NaN') or (recomendacoes[i] != 'nan')] 
     tamanho_recomendacao = len(recomendacoes) 
     
     produtos_carteira_acoes = np.unique(dados_produtos[['Produto']][(dados_produtos['Conta'] == conta) 
