@@ -151,11 +151,11 @@ segmento_ativo.loc[len(segmento_ativo)] = ['CONTA CORRENTE', 'Conta Corrente',
 
 dados_produtos = base_btg_produtos.drop(['Nome','EMISSOR', 'Vencimento', 'Quantidade','Soma_de_IR', 
                                            'Soma_de_IOF', 'ESCRITÓRIO', 'Data_texto'], axis = 1) 
-dados_produtos = dados_produtos.drop_duplicates() 
-dados_produtos.reset_index(drop = True, inplace = True)  
+# dados_produtos = dados_produtos.drop_duplicates() 
+# dados_produtos.reset_index(drop = True, inplace = True)  
 
 dados_produtos = pd.merge(dados_produtos.copy(), segmento_ativo[['Produto','Segmento']].copy(), 
-                    on = 'Produto', how = 'right', suffixes = ('_p','_c'))   
+                    on = 'Produto', how = 'left', suffixes = ('_p','_c'))   
 
 dados_nomes = pd.merge(dados_produtos.copy(), dados.copy(), 
                     on = 'Conta', how = 'right', suffixes = ('_p','_c')) 
@@ -163,6 +163,7 @@ dados_nomes = pd.merge(dados_produtos.copy(), dados.copy(),
 categoria = dados_nomes.Categoria
 segmento = dados_nomes.Segmento
 dados_nomes['Categoria-Segmento'] = categoria + '-' + segmento 
+dados_nomes.dropna(inplace = True) 
 dados_nomes['Conta'] = dados_nomes['Conta'].astype(int) 
 
 fundos_cadastro_btg = get_tabela("fundos_cad_btg")
@@ -179,149 +180,6 @@ fundos_btg_cnpj = base_btg_fundos_cnpj[base_btg_fundos_cnpj.CNPJ.notna()]
 fundos_btg_cnpj = fundos_btg_cnpj.sort_values('Produto')
 fundos_btg_cnpj.reset_index(drop = True, inplace = True)
 
-# import yfinance as yf
-
-# carteira = np.unique(base_btg_produtos.Produto[(base_btg_produtos.Mercado == 'Renda Variável') |
-#                           (base_btg_produtos.Mercado == 'Derivativos')].unique()) 
-# carteira = carteira.astype('O') 
-# for j in range(len(carteira)):
-#     carteira[j] = carteira[j] + '.SA'
-
-# yesterday = dt.date.today() - dt.timedelta(1) 
-# yesterday = str(yesterday) 
-# dados_precos = pd.DataFrame() 
-# not_find = ['ABCB2.SA', 'AERI3.SA', 'BBASN361.SA', 'BBDCC285.SA', 'BBDCC293.SA', 'BBDCN234.SA',
-#             'BBDCN256.SA', 'BBDCN271.SA', 'BBDCO197.SA', 'BBDCO256.SA', 'BOVAN110.SA', 'BRMLN820.SA',
-#             'MINI INDICE BOVESPA FUTURO.SA','Microcontrato de Índice S&P500.SA',
-#             'INDICE BOVESPA FUTURO.SA', 'CNTO3.SA', 'COGNB480.SA', 'COGNC40.SA', 'COGNC750.SA',
-#             'CPTS12.SA', 'CSNAC389.SA', 'CSNAN32.SA', 'CSNAO329.SA', 'CVBI12.SA', 'CYREB320.SA',
-#             'DMMO11.SA', 'GGBRB268.SA', 'GGBRB280.SA', 'GGBRC267.SA', 'GGBRN251.SA','GGBRO221.SA',
-#             'GGBRO251.SA','IRBRB105.SA', 'IRBRB760.SA', 'IRBRB800.SA', 'IRBRC107.SA', 'IRBRC115.SA',
-#             'IRBRN610.SA', 'ITUBC301.SA', 'ITUBN297.SA', 'ITUBO252.SA', 'ITUBO292.SA', 'JBSSB270.SA',
-#             'LAME1.SA', 'LAME2.SA', 'OUJP12.SA', 'PETRB299.SA', 'PETRB317.SA', 'PETRC309.SA',
-#             'PTAX800.SA', 'RLOG3.SA', 'TIET11.SA', 'VALEN937.SA','VALEO922.SA', 'VALEO962.SA',
-#             'VILG14.SA', 'VIVR1.SA', 'VVARB155.SA', 'VVARB160.SA', 'VVARC155.SA', 'VVARC170.SA']          
-# for ativo in carteira: 
-#     if ativo not in not_find:
-#         dados_precos[ativo] = yf.download(ativo, start = '2014-01-01', end = yesterday)['Adj Close']
-
-# dados_precos = dados_precos.fillna(method = 'bfill') 
-# dados_precos.dropna(axis = 1, inplace = True) 
-
-# def get_tabela_cotas(ano_mes):
-#     url = 'http://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/inf_diario_fi_' + str(ano_mes) + '.csv'
-#     tabela = pd.read_csv(url, sep = ';')     
-#     tabela = tabela[['CNPJ_FUNDO', 'DT_COMPTC', 'VL_QUOTA']] 
-#     tabela.rename(columns = {'CNPJ_FUNDO' : 'CNPJ', 'DT_COMPTC' : 'Date',
-#                    'VL_QUOTA' : 'Valor_Cota'}, inplace = True) 
-#     tabela['CNPJ'] = tabela['CNPJ'].apply(lambda x : str(x).replace('.',''))   
-#     tabela['CNPJ'] = tabela['CNPJ'].apply(lambda x : str(x).replace('/',''))
-#     tabela['CNPJ'] = tabela['CNPJ'].apply(lambda x : str(x).replace('-',''))
-#     dados_fundos = pd.merge(tabela.copy(), fundos_btg_cnpj.copy(),
-#                             on = 'CNPJ', how = 'inner', suffixes = ('_l', '_r')) 
-#     dados_fundos.drop('CNPJ', axis = 1, inplace = True) 
-#     dados_fundos = dados_fundos.groupby('Produto').agg(list)
-#     dados_fundos = dados_fundos.reset_index() 
-#     dados_fundos['tamanho'] = [len(dados_fundos.Date[n]) for n in range(dados_fundos.shape[0])]
-#     colunas = dados_fundos.Produto.unique()
-#     datas = dados_fundos.Date[dados_fundos[dados_fundos.tamanho == dados_fundos.tamanho.max()].index[0]] 
-#     df = pd.DataFrame(columns = colunas, index = datas)   
-#     for i in range(dados_fundos.shape[0]):
-#         if dados_fundos.Produto[i] == df.columns.values[i]:
-#             if df[df.columns.values[i]].shape[0] == len(dados_fundos.Valor_Cota[i]):
-#                 df[df.columns.values[i]] = dados_fundos.Valor_Cota[i] 
-#             else:
-#                 for k in range(df[df.columns.values[i]].shape[0] - len(dados_fundos.Valor_Cota[i])):
-#                     dados_fundos.Valor_Cota[i].append(np.mean(dados_fundos.Valor_Cota[i])) 
-#                 df[df.columns.values[i]] = dados_fundos.Valor_Cota[i]   
-#     return df
-
-# cotas_fundos_cvm_abril_19 = get_tabela_cotas("201904") 
-# print("201904")
-# cotas_fundos_cvm_maio_19 = get_tabela_cotas("201905")  
-# print("201905")
-# cotas_fundos_cvm_junho_19 = get_tabela_cotas("201906") 
-# print("201906")
-# cotas_fundos_cvm_julho_19 = get_tabela_cotas("201907") 
-# print("201907")
-# cotas_fundos_cvm_agosto_19 = get_tabela_cotas("201908") 
-# print("201908")
-# cotas_fundos_cvm_setembro_19 = get_tabela_cotas("201909") 
-# print("201909")
-# cotas_fundos_cvm_outubro_19 = get_tabela_cotas("201910") 
-# print("201910")
-# cotas_fundos_cvm_novembro_19 = get_tabela_cotas("201911") 
-# print("201911")
-# cotas_fundos_cvm_dezembro_19 = get_tabela_cotas("201912") 
-# print("201912")
-# cotas_fundos_cvm_janeiro_20 = get_tabela_cotas("202001") 
-# print("202001")
-# cotas_fundos_cvm_fevereiro_20 = get_tabela_cotas("202002") 
-# print("202002")
-# cotas_fundos_cvm_marco_20 = get_tabela_cotas("202003") 
-# print("202003")
-# cotas_fundos_cvm_abril_20 = get_tabela_cotas("202004") 
-# print("202004")
-# cotas_fundos_cvm_maio_20 = get_tabela_cotas("202005")  
-# print("202005")
-# cotas_fundos_cvm_junho_20 = get_tabela_cotas("202006")  
-# print("202006")
-# cotas_fundos_cvm_julho_20 = get_tabela_cotas("202007")  
-# print("202007")
-# cotas_fundos_cvm_agosto_20 = get_tabela_cotas("202008")  
-# print("202008")
-# cotas_fundos_cvm_setembro_20 = get_tabela_cotas("202009")  
-# print("202009")
-# cotas_fundos_cvm_outubro_20 = get_tabela_cotas("202010")  
-# print("202010")
-# cotas_fundos_cvm_novembro_20 = get_tabela_cotas("202011")  
-# print("202011")
-# cotas_fundos_cvm_dezembro_20 = get_tabela_cotas("202012")
-# print("202012")
-# cotas_fundos_cvm_janeiro_21 = get_tabela_cotas("202101")
-# print("202101")
-# cotas_fundos_cvm_fevereiro_21 = get_tabela_cotas("202102") 
-# print("202102")
-# cotas_fundos_cvm_marco_21 = get_tabela_cotas("202103")
-# print("202103")
-# cotas_fundos_cvm_abril_21 = get_tabela_cotas("202104")
-# print("202104")
-# cotas_fundos_cvm_maio_21 = get_tabela_cotas("202105") 
-# print("202105")
-# cotas_fundos_cvm_junho_21 = get_tabela_cotas("202106")
-# print("202106")
-# cotas_fundos_cvm_julho_21 = get_tabela_cotas("202107")   
-# print("202107") 
-
-# dados_fundos = pd.DataFrame()
-# dados_fundos = pd.concat([cotas_fundos_cvm_abril_19, cotas_fundos_cvm_maio_19, cotas_fundos_cvm_junho_19, 
-# cotas_fundos_cvm_julho_19, cotas_fundos_cvm_agosto_19, cotas_fundos_cvm_setembro_19, 
-# cotas_fundos_cvm_outubro_19, cotas_fundos_cvm_novembro_19, cotas_fundos_cvm_dezembro_19,
-# cotas_fundos_cvm_janeiro_20, cotas_fundos_cvm_fevereiro_20, cotas_fundos_cvm_marco_20,
-# cotas_fundos_cvm_abril_20, cotas_fundos_cvm_maio_20, cotas_fundos_cvm_junho_20,
-# cotas_fundos_cvm_julho_20, cotas_fundos_cvm_agosto_20, cotas_fundos_cvm_setembro_20,
-# cotas_fundos_cvm_outubro_20, cotas_fundos_cvm_novembro_20, cotas_fundos_cvm_dezembro_20,
-# cotas_fundos_cvm_janeiro_21, cotas_fundos_cvm_fevereiro_21, cotas_fundos_cvm_marco_21,
-# cotas_fundos_cvm_abril_21, cotas_fundos_cvm_maio_21, cotas_fundos_cvm_junho_21,
-# cotas_fundos_cvm_julho_21]) 
-# dados_fundos = dados_fundos.fillna(method = 'bfill') 
-
-# dados_precos.reset_index(inplace = True)
-# dados_fundos.reset_index(inplace = True) 
-# dados_fundos.rename(columns = {'index': 'Date_p'}, inplace = True) 
-# dados_fundos['Date_p'] = pd.to_datetime(dados_fundos['Date_p'], format = '%Y-%m-%d') 
-# dados_precos['Date'] = pd.to_datetime(dados_precos['Date'], format = '%Y-%m-%d')  
-# dados_precos2 = dados_precos[dados_precos.Date >= '2019-04-01'] 
-# dados_precos2.reset_index(drop = True, inplace = True) 
-# dados_fundos2 = dados_fundos.copy() 
-
-# dados_precos_fundos = pd.concat([dados_precos2.copy(), dados_fundos2.copy()], axis = 1)
-# dados_precos_fundos.set_index('Date', inplace = True) 
-# dados_precos_fundos.dropna(inplace = True)
-# dados_precos_fundos.index = dados_precos_fundos.index.map(str)  
-# dados_precos_fundos.reset_index(inplace = True)
-# dados_precos_fundos['Date'] = pd.to_datetime(dados_precos_fundos['Date'], format = "%Y-%m-%d")
-# dados_precos_fundos.drop('Date_p', inplace = True, axis = 1)  
 print('Tratando os dados....')
 dados_precos_fundos = get_tabela("dados_precos_fundos")
 dados_precos_fundos.set_index('Date', inplace = True) 
@@ -333,13 +191,26 @@ cov_diaria = retorno.cov()
 cov_anual = cov_diaria * 250 
 
 dados_produtos = dados_produtos[dados_produtos.Conta.notna()]
-dados_produtos = dados_produtos.drop_duplicates() 
-dados_produtos.reset_index(drop = True, inplace = True) 
+# dados_produtos = dados_produtos.drop_duplicates() 
+# dados_produtos.reset_index(drop = True, inplace = True) 
+dados_produtos.Segmento.fillna(0, inplace = True)   
+for i in range(dados_produtos.shape[0]):
+    if dados_produtos.Segmento[i] == 0:
+        dados_produtos.Segmento[i] = dados_produtos.Categoria[i] 
+
 dados_produtos['Conta'] = dados_produtos['Conta'].astype(int) 
 dados_produtos['Valor_Bruto'] = dados_produtos['Valor_Bruto'].apply(lambda x : str(x).replace('.',''))   
 dados_produtos['Valor_Bruto'] = dados_produtos['Valor_Bruto'].astype(float)  
 dados_produtos['Data'] = pd.to_datetime(dados_produtos['Data'], format = '%d %b %Y %H:%M:%S')   
 dados_produtos = dados_produtos.loc[dados_produtos.Data == dados_produtos.Data.max()]   
+dados_produtos = dados_produtos.drop_duplicates() 
+dados_produtos.reset_index(drop = True, inplace = True) 
+
+dados_produtos = dados_produtos[(dados_produtos.Mercado == 'Renda Variável') | 
+                               (dados_produtos.Mercado == 'Fundos') | 
+                               (dados_produtos.Mercado == 'Conta Corrente') | 
+                               (dados_produtos.Mercado == 'Derivativos')] 
+dados_produtos = dados_produtos.drop_duplicates() 
 dados_produtos.reset_index(drop = True, inplace = True) 
 
 dados_produtos['Total'] = 0
@@ -430,6 +301,7 @@ def recomenda(conta):
 
     portfolio = {'Retornos' : port_returns, 'Volatilidade' : port_volatility, 'Sharpe' : lista_sharpe_ratio}
 
+    portfolio_ativos = {}
     for counter, symbol in enumerate(produtos_carteira1):
         portfolio[symbol + ' peso'] = [pesos_carteira[counter] for pesos_carteira in stock_weights]
 
@@ -463,9 +335,13 @@ def recomenda(conta):
     json_carteira[dados_filtrado2.columns.values[7]] = lista_porcentagem
 
     json_balanco = {}
+    json_portfolio = {}
     if len(carteira_maior_sharpe) > 0:
         for n in range(len(carteira_maior_sharpe.columns.values)):
-            json_balanco[carteira_maior_sharpe.columns.values[n]] = carteira_maior_sharpe[0:1].values[0][n] 
+            if carteira_maior_sharpe.columns.values[n] != 'Retornos' and carteira_maior_sharpe.columns.values[n] != 'Volatilidade' and carteira_maior_sharpe.columns.values[n] != 'Sharpe':
+                json_balanco[carteira_maior_sharpe.columns.values[n]] = carteira_maior_sharpe[0:1].values[0][n] 
+            else:
+                json_portfolio[carteira_maior_sharpe.columns.values[n]] = carteira_maior_sharpe[0:1].values[0][n] 
     else:
         json_balanco = {}
 
@@ -477,10 +353,11 @@ def recomenda(conta):
     # json_porcentagens.pop('CONTA CORRENTE') 
 
     json_final = {
-        'Cliente' : json_cliente,
-        'Carteira' : json_carteira,
         'Balanceamento' : json_balanco,
+        'Carteira' : json_carteira,
+        'Cliente' : json_cliente,
         'Porcentagens' : json_porcentagens,
+        'Portfolio' : json_portfolio,
         'Recomendacoes' : json_recomendacoes
     }
 
