@@ -41,7 +41,7 @@ def get_tabela(nome_tabela):
                 
     return tabela 
 
-print('Carregando imagem 04/08 15:25')
+print('Carregando imagem 04/08 18:05') 
 print('Conectando e puxando as tabelas...')
 base_btg_clientes = get_tabela('base_btg') 
 base_btg_produtos = get_tabela('posicao_potenza') 
@@ -250,7 +250,7 @@ for k in range(len(dados_nomes.Conta.unique())):
 dados_contas_final['Contas'] = dados_contas
 
 print('Start da API....') 
-print('Carregando imagem 04/08 15:25')
+print('Carregando imagem 04/08 18:05')
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 app.config['JSON_AS_ASCII'] = False
@@ -319,13 +319,13 @@ def recomenda(conta):
 
     portfolio_ativos = {}
     for counter, symbol in enumerate(produtos_carteira1):
-        portfolio[symbol + ' peso'] = [pesos_carteira[counter] for pesos_carteira in stock_weights]
+        portfolio[symbol] = [pesos_carteira[counter] for pesos_carteira in stock_weights]
 
     df = pd.DataFrame(portfolio) 
                           
     maior_sharpe = df['Sharpe'].max()
     carteira_maior_sharpe = df.loc[df['Sharpe'] == maior_sharpe] 
-    carteira_maior_sharpe = round(carteira_maior_sharpe, 3)
+    carteira_maior_sharpe = round((carteira_maior_sharpe * 100), 2)
     colunas3 = carteira_maior_sharpe.columns.values
     
     json_cliente = {}
@@ -363,10 +363,16 @@ def recomenda(conta):
 
     json_recomendacoes = {'Recomendacoes' : recomendacoes_final}
 
+    for k in dados_filtrado2.index:   
+        dados_filtrado2['Produto'][k] = dados_filtrado2['Produto'][k].replace(' ', '_')
+        dados_filtrado2['Produto'][k] = dados_filtrado2['Produto'][k].replace('-', '_')
+        dados_filtrado2['Produto'][k] = dados_filtrado2['Produto'][k].replace('&', 'e') 
+        dados_filtrado2['Produto'][k] = dados_filtrado2['Produto'][k].replace('.', '_')
+
     json_porcentagens = {} 
     for k in range((dados_filtrado2.shape[0])):
         json_porcentagens[dados_filtrado2.Produto.values[k]] = dados_filtrado2['Porcentagem (%)'].values[k]
-    json_porcentagens.pop('CONTA CORRENTE') 
+    json_porcentagens.pop('CONTA_CORRENTE') 
 
     json_percents = {'Balanceamento' : json_balanco, 'Porcentagens' : json_porcentagens}
 
