@@ -41,7 +41,7 @@ def get_tabela(nome_tabela):
                 
     return tabela 
 
-print('Carregando imagem 04/08 14:35')
+print('Carregando imagem 04/08 15:25')
 print('Conectando e puxando as tabelas...')
 base_btg_clientes = get_tabela('base_btg') 
 base_btg_produtos = get_tabela('posicao_potenza') 
@@ -157,9 +157,17 @@ dados_produtos = base_btg_produtos.drop(['Nome','EMISSOR', 'Vencimento', 'Quanti
 dados_produtos = pd.merge(dados_produtos.copy(), segmento_ativo[['Produto','Segmento']].copy(), 
                     on = 'Produto', how = 'left', suffixes = ('_p','_c'))   
 
+dados_produtos.Segmento.fillna(0, inplace = True)   
+for i in range(dados_produtos.shape[0]):
+    if dados_produtos.Segmento[i] == 0:
+        dados_produtos.Segmento[i] = dados_produtos.Categoria[i] 
+dados_produtos = dados_produtos.drop_duplicates() 
+dados_produtos.reset_index(drop = True, inplace = True) 
+
 dados_nomes = pd.merge(dados_produtos.copy(), dados.copy(), 
                     on = 'Conta', how = 'right', suffixes = ('_p','_c')) 
-                
+dados_nomes.dropna(inplace = True) 
+    
 categoria = dados_nomes.Categoria
 segmento = dados_nomes.Segmento
 dados_nomes['Categoria-Segmento'] = categoria + '-' + segmento 
@@ -234,7 +242,8 @@ for k in range(len(dados_nomes.Conta.unique())):
     dados_contas.append(dados_contas_str.unique()[k])
 dados_contas_final['Contas'] = dados_contas
 
-print('Start da API....')
+print('Start da API....') 
+print('Carregando imagem 04/08 15:25')
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 app.config['JSON_AS_ASCII'] = False
@@ -348,15 +357,16 @@ def recomenda(conta):
     json_recomendacoes = {'Recomendacoes' : recomendacoes_final}
 
     json_porcentagens = {} 
-    for k in range((dados_filtrado2.shape[0]) - 1):
+    for k in range((dados_filtrado2.shape[0])):
         json_porcentagens[dados_filtrado2.Produto.values[k]] = dados_filtrado2['Porcentagem (%)'].values[k]
-    # json_porcentagens.pop('CONTA CORRENTE') 
+    json_porcentagens.pop('CONTA CORRENTE') 
+
+    json_percents = {'Balanceamento' : json_balanco, 'Porcentagens' : json_porcentagens}
 
     json_final = {
-        'Balanceamento' : json_balanco,
         'Carteira' : json_carteira,
         'Cliente' : json_cliente,
-        'Porcentagens' : json_porcentagens,
+        'Porcentagens' : json_percents,
         'Portfolio' : json_portfolio,
         'Recomendacoes' : json_recomendacoes
     }
