@@ -164,6 +164,13 @@ for i in range(dados_produtos.shape[0]):
 dados_produtos = dados_produtos.drop_duplicates() 
 dados_produtos.reset_index(drop = True, inplace = True) 
 
+dados_produtos = dados_produtos[(dados_produtos.Mercado == 'Renda Variável') | 
+                               (dados_produtos.Mercado == 'Fundos') | 
+                               (dados_produtos.Mercado == 'Conta Corrente') | 
+                               (dados_produtos.Mercado == 'Derivativos')] 
+dados_produtos = dados_produtos.drop_duplicates() 
+dados_produtos.reset_index(drop = True, inplace = True) 
+
 dados_nomes = pd.merge(dados_produtos.copy(), dados.copy(), 
                     on = 'Conta', how = 'right', suffixes = ('_p','_c')) 
 dados_nomes.dropna(inplace = True) 
