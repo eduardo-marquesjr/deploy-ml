@@ -41,7 +41,7 @@ def get_tabela(nome_tabela):
                 
     return tabela 
 
-print('Carregando imagem 04/08 09:20')
+print('Carregando imagem 04/08 14:35')
 print('Conectando e puxando as tabelas...')
 base_btg_clientes = get_tabela('base_btg') 
 base_btg_produtos = get_tabela('posicao_potenza') 
