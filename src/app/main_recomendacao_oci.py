@@ -354,6 +354,14 @@ for i in range(dados_produtos.shape[0]):
 dados_produtos['Porcentagem (%)'] = dados_produtos['Valor_Bruto'] / dados_produtos['Total'] 
 dados_produtos['Porcentagem (%)'] = round((dados_produtos['Porcentagem (%)'] * 100), 2) 
 
+dados_contas = []
+dados_contas_final = {} 
+dados_contas_str = dados_nomes.Conta
+dados_contas_str = dados_contas_str.astype('O')
+for k in range(len(dados_nomes.Conta.unique())):
+    dados_contas.append(dados_contas_str.unique()[k])
+dados_contas_final['Contas'] = dados_contas
+
 print('Start da API....')
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
@@ -366,14 +374,6 @@ def home():
 
 @app.route('/contas')
 def contas():
-    dados_contas = []
-    dados_contas_final = {} 
-    dados_contas_str = dados_nomes.Conta
-    dados_contas_str = dados_contas_str.astype('O')
-    for k in range(len(dados_nomes.Conta.unique())):
-        dados_contas.append(dados_contas_str.unique()[k])
-    dados_contas_final['Contas'] = dados_contas
-    # dados_contas_final = {'Contas' : dados_contas_final}
     return jsonify(Data=dados_contas_final) 
 
 @app.route('/recomenda/<int:conta>') 
@@ -388,6 +388,7 @@ def recomenda(conta):
     cluster = localiza.Clusters[0:1].values[0] 
     recomendacoes = dados_nomes[dados_nomes.Clusters == cluster] 
     recomendacoes = recomendacoes['Categoria-Segmento'].unique()
+    recomendacoes = recomendacoes.astype('O') 
     recomendacoes_final = [recomendacoes[i] for i in range(len(recomendacoes)) if recomendacoes[i] != 'Conta Corrente-Conta Corrente' and recomendacoes[i] != None and recomendacoes[i] != 'NaN' and recomendacoes[i] != 'nan'] 
     tamanho_recomendacao = len(recomendacoes_final) 
     
