@@ -196,7 +196,7 @@ fundos_btg_cnpj = fundos_btg_cnpj.sort_values('Produto')
 fundos_btg_cnpj.reset_index(drop = True, inplace = True)
 
 print('Tratando os dados....')
-dados_precos_fundos = get_tabela("dados_precos_fundos")
+dados_precos_fundos = get_tabela("dados_precos_fundos2")
 dados_precos_fundos.set_index('Date', inplace = True) 
 
 retorno = dados_precos_fundos.pct_change()
@@ -247,6 +247,7 @@ dados_contas_str = dados_nomes.Conta
 dados_contas_str = dados_contas_str.astype('O')
 for k in range(len(dados_nomes.Conta.unique())):
     dados_contas.append(dados_contas_str.unique()[k])
+dados_contas = sorted(dados_contas)  
 dados_contas_final['Contas'] = dados_contas
 
 print('Start da API....') 
