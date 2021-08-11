@@ -41,7 +41,7 @@ def get_tabela(nome_tabela):
                 
     return tabela 
 
-print('Carregando imagem 04/08 18:05') 
+print('Carregando imagem 11/08 14:05') 
 print('Conectando e puxando as tabelas...')
 base_btg_clientes = get_tabela('base_btg') 
 base_btg_produtos = get_tabela('posicao_potenza') 
@@ -251,7 +251,7 @@ dados_contas = sorted(dados_contas)
 dados_contas_final['Contas'] = dados_contas
 
 print('Start da API....') 
-print('Carregando imagem 04/08 18:05')
+print('Carregando imagem 11/08 18:05')
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 app.config['JSON_AS_ASCII'] = False
