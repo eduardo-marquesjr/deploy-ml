@@ -12,6 +12,8 @@ app.secret_key = 'ccm'
 
 dados_nomes, dados_usuarios, base_btg_produtos, dados_precos, retorno_anual, cov_anual = trata_e_roda()
 
+print(f'Start API {dt.datetime.now()}')
+
 @app.route('/home') 
 def home():
     if 'usuario_logado' not in session or session['usuario_logado'] == None:

@@ -1,5 +1,5 @@
 #encoding: utf-8
-# trata e roda...
+# trata e roda..
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import pandas as pd
 import yfinance as yf
