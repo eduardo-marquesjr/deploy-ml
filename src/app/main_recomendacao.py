@@ -4,13 +4,13 @@ import pandas as pd
 import datetime as dt
 import numpy as np
 import os
-from tratamento import trata_e_roda
+from tratamento2 import trata_e_roda
 from pandas_datareader import data as pdr
 
 app = Flask(__name__)
 app.secret_key = 'ccm'
 
-dados_nomes, dados_usuarios, base_btg_produtos, dados_precos, retorno_anual, cov_anual = trata_e_roda()
+dados_nomes, dados_produtos, dados_precos, dados_usuarios, retorno_anual, cov_anual = trata_e_roda()
 
 print(f'Start API {dt.datetime.now()}')
 

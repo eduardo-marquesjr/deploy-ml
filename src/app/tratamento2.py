@@ -168,4 +168,12 @@ def trata_e_roda():
     dados_produtos = dados_produtos[dados_produtos.Conta.notna()]
     dados_produtos.reset_index(drop = True, inplace = True)
 
-    return dados_nomes, dados_produtos, dados_precos
+    dados_usuarios = pd.read_csv('..\..\data\processed\potenza.csv')
+
+    retorno = dados_precos.pct_change()
+    retorno = retorno.iloc[1:] 
+    retorno_anual = retorno.mean() * 250
+    cov_diaria = retorno.cov() 
+    cov_anual = cov_diaria * 250 
+
+    return dados_nomes, dados_produtos, dados_precos, dados_usuarios, retorno_anual, cov_anual
