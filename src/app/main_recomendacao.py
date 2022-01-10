@@ -23,22 +23,23 @@ def home():
 
 @app.route('/recomenda/' , methods = ['POST']) 
 def recomenda():
-    conta = int(request.form['conta']) 
+    conta = request.form['conta'] 
     dados_filtrado = dados_nomes[['Conta','Tipo','Profissao', 'Estado_Civil', 'Estado', 'Perfil_do_Cliente',
                                  'Tipo_Investidor', 'Faixa_Cliente', 'Idade']][dados_nomes['Conta'] == conta]
-    dados_filtrado2 = base_btg_produtos[['Conta', 'Mercado', 'Produto', 'Segmento', 'Ativo', 
-                                         'Categoria']][base_btg_produtos['Conta'] == conta]
+    print(dados_filtrado[0:1]) 
+    dados_filtrado2 = dados_produtos[['Conta', 'Mercado', 'Produto', 'Segmento', 'Ativo', 
+                                         'Categoria']][dados_produtos['Conta'] == conta]
     localiza = dados_nomes[dados_nomes['Conta'] == conta] 
     colunas = dados_filtrado.columns.values  
-    colunas2 = dados_filtrado2.columns.values
+    colunas2 = dados_filtrado2.columns.values   
     cluster = localiza.Clusters.unique()[0] 
     recomendacoes = dados_nomes[dados_nomes.Clusters == cluster] 
     recomendacoes = recomendacoes['Categoria-Segmento'][recomendacoes.Clusters == cluster].unique()
     recomendacoes = [recomendacoes[i] for i in range(len(recomendacoes))] 
     tamanho_recomendacao = len(recomendacoes) 
     
-    produtos_carteira = np.unique(base_btg_produtos[['Produto']][(base_btg_produtos['Conta'] == conta) 
-            & ((base_btg_produtos['Mercado'] == 'Derivativos') | (base_btg_produtos['Mercado'] == 'Renda Variável'))].values)
+    produtos_carteira = np.unique(dados_produtos[['Produto']][(dados_produtos['Conta'] == conta) 
+            & ((dados_produtos['Mercado'] == 'Derivativos') | (dados_produtos['Mercado'] == 'Renda Variável'))].values)
     produtos_carteira = produtos_carteira + '.SA'
     produtos_carteira1 = [produtos_carteira[i] for i in range(len(produtos_carteira)) if produtos_carteira[i] in
                           dados_precos.columns.values] 

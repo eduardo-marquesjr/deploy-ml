@@ -144,36 +144,39 @@ def trata_e_roda():
     for j in range(len(carteira)):
         carteira[j] = carteira[j] + '.SA'
 
-    yesterday = dt.date.today() - dt.timedelta(1) 
-    yesterday = str(yesterday) 
-    dados_precos = pd.DataFrame() 
-    not_find = ['ABCB2.SA', 'AERI3.SA', 'BBASN361.SA', 'BBDCC285.SA', 'BBDCC293.SA', 'BBDCN234.SA',
-                'BBDCN256.SA', 'BBDCN271.SA', 'BBDCO197.SA', 'BBDCO256.SA', 'BOVAN110.SA', 'BRMLN820.SA',
-                'MINI INDICE BOVESPA FUTURO.SA','Microcontrato de Índice S&P500.SA',
-                'INDICE BOVESPA FUTURO.SA', 'CNTO3.SA', 'COGNB480.SA', 'COGNC40.SA', 'COGNC750.SA',
-                'CPTS12.SA', 'CSNAC389.SA', 'CSNAN32.SA', 'CSNAO329.SA', 'CVBI12.SA', 'CYREB320.SA',
-                'DMMO11.SA', 'GGBRB268.SA', 'GGBRB280.SA', 'GGBRC267.SA', 'GGBRN251.SA','GGBRO221.SA',
-                'GGBRO251.SA','IRBRB105.SA', 'IRBRB760.SA', 'IRBRB800.SA', 'IRBRC107.SA', 'IRBRC115.SA',
-                'IRBRN610.SA', 'ITUBC301.SA', 'ITUBN297.SA', 'ITUBO252.SA', 'ITUBO292.SA', 'JBSSB270.SA',
-                'LAME1.SA', 'LAME2.SA', 'OUJP12.SA', 'PETRB299.SA', 'PETRB317.SA', 'PETRC309.SA',
-                'PTAX800.SA', 'RLOG3.SA', 'TIET11.SA', 'VALEN937.SA','VALEO922.SA', 'VALEO962.SA',
-                'VILG14.SA', 'VIVR1.SA', 'VVARB155.SA', 'VVARB160.SA', 'VVARC155.SA', 'VVARC170.SA']          
-    for ativo in carteira: 
-        if ativo not in not_find:
-            dados_precos[ativo] = yf.download(ativo, start = '2014-01-01', end = yesterday)['Adj Close']
+    # yesterday = dt.date.today() - dt.timedelta(1) 
+    # yesterday = str(yesterday) 
+    # dados_precos = pd.DataFrame() 
+    # not_find = ['ABCB2.SA', 'AERI3.SA', 'BBASN361.SA', 'BBDCC285.SA', 'BBDCC293.SA', 'BBDCN234.SA',
+    #             'BBDCN256.SA', 'BBDCN271.SA', 'BBDCO197.SA', 'BBDCO256.SA', 'BOVAN110.SA', 'BRMLN820.SA',
+    #             'MINI INDICE BOVESPA FUTURO.SA','Microcontrato de Índice S&P500.SA',
+    #             'INDICE BOVESPA FUTURO.SA', 'CNTO3.SA', 'COGNB480.SA', 'COGNC40.SA', 'COGNC750.SA',
+    #             'CPTS12.SA', 'CSNAC389.SA', 'CSNAN32.SA', 'CSNAO329.SA', 'CVBI12.SA', 'CYREB320.SA',
+    #             'DMMO11.SA', 'GGBRB268.SA', 'GGBRB280.SA', 'GGBRC267.SA', 'GGBRN251.SA','GGBRO221.SA',
+    #             'GGBRO251.SA','IRBRB105.SA', 'IRBRB760.SA', 'IRBRB800.SA', 'IRBRC107.SA', 'IRBRC115.SA',
+    #             'IRBRN610.SA', 'ITUBC301.SA', 'ITUBN297.SA', 'ITUBO252.SA', 'ITUBO292.SA', 'JBSSB270.SA',
+    #             'LAME1.SA', 'LAME2.SA', 'OUJP12.SA', 'PETRB299.SA', 'PETRB317.SA', 'PETRC309.SA',
+    #             'PTAX800.SA', 'RLOG3.SA', 'TIET11.SA', 'VALEN937.SA','VALEO922.SA', 'VALEO962.SA',
+    #             'VILG14.SA', 'VIVR1.SA', 'VVARB155.SA', 'VVARB160.SA', 'VVARC155.SA', 'VVARC170.SA']          
+    # for ativo in carteira: 
+    #     if ativo not in not_find:
+    #         dados_precos[ativo] = yf.download(ativo, start = '2014-01-01', end = yesterday)['Adj Close']
 
-    dados_precos = dados_precos.fillna(method = 'bfill') 
-    dados_precos.dropna(axis = 1, inplace = True) 
+    # dados_precos = dados_precos.fillna(method = 'bfill') 
+    # dados_precos.dropna(axis = 1, inplace = True) 
+
+    dados_precos_fundos = get_tabela('dados_precos_fundos2') 
+    dados_precos_fundos.set_index('Date', inplace = True)
 
     dados_produtos = dados_produtos[dados_produtos.Conta.notna()]
     dados_produtos.reset_index(drop = True, inplace = True)
 
-    dados_usuarios = pd.read_csv('..\..\data\processed\potenza.csv')
+    dados_usuarios = pd.read_csv('data/processed/potenza.csv', sep = ';') 
 
-    retorno = dados_precos.pct_change()
+    retorno = dados_precos_fundos.pct_change()
     retorno = retorno.iloc[1:] 
     retorno_anual = retorno.mean() * 250
     cov_diaria = retorno.cov() 
     cov_anual = cov_diaria * 250 
 
-    return dados_nomes, dados_produtos, dados_precos, dados_usuarios, retorno_anual, cov_anual
+    return dados_nomes, dados_produtos, dados_precos_fundos, dados_usuarios, retorno_anual, cov_anual
