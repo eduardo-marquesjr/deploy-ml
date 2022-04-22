@@ -1,7 +1,7 @@
-ccm-deploy
+deploy-ml
 ==============================
 
-deploy modelos ccm
+deploy modelos
 
 Project Organization
 ------------
